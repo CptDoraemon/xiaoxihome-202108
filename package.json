@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "lightgallery": "^2.1.8",
     "next": "11.0.1",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-use": "^17.2.4"
   },
   "devDependencies": {
     "@types/react": "17.0.15",
