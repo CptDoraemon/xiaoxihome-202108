@@ -1,11 +1,11 @@
 import React from "react";
-import {Button, createStyles, IconButton, Link, makeStyles, Paper, Theme, Typography} from "@material-ui/core";
+import {Button, IconButton, Link, makeStyles, Paper, Typography} from "@material-ui/core";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import clsx from "clsx";
 import SlideUpText from "./SlideUpText";
 import {MOBILE} from "../../theme";
 import useGetFullscreenHeight from "../../utils/useGetFullscreenHeight";
-import {ARROW_HEIGHT} from "./Timeline";
+import {ARROW_HEIGHT} from "./SectionTitle";
 
 interface CoverProps {}
 
@@ -78,6 +78,7 @@ const useStyles = makeStyles((theme) => {
       justifyContent: 'center',
       [MOBILE(theme)]: {
         height: '50%',
+        width: '100%'
       }
     },
     titleWrapper: {
@@ -102,6 +103,30 @@ const useStyles = makeStyles((theme) => {
       fontSize: theme.typography.h5.fontSize,
       fontWeight: 600,
       marginTop: theme.spacing(4)
+    },
+    aspectRatioWrapper: {
+      width: '100%',
+      position: 'relative',
+      [MOBILE(theme)]: {
+        maxWidth: 300,
+      }
+    },
+    square: {
+      position: 'relative',
+      zIndex: 1,
+      width: '100%',
+      paddingBottom: '100%'
+    },
+    payload: {
+      width: '100%',
+      height: '100%',
+      zIndex: 2,
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      borderRadius: theme.shape.borderRadius,
+      overflow: 'hidden',
+      backgroundColor: theme.palette.text.secondary
     }
   }
 });
@@ -138,7 +163,14 @@ const Cover = () => {
             </div>
           </div>
           <div className={classes.row}>
+            <div className={classes.aspectRatioWrapper}>
+              <div className={classes.square}>
 
+              </div>
+              <div className={classes.payload}>
+
+              </div>
+            </div>
           </div>
         </div>
 

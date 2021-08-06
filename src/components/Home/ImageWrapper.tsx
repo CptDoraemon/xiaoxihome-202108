@@ -5,7 +5,6 @@ import clsx from "clsx";
 import useIsInSight from "../../utils/useIsInSight";
 import {useMount} from "react-use";
 import useDebouncedCallback from "../../utils/useDebouncedCallback";
-import {MOBILE} from "../../theme";
 
 const IMAGE_BG_OFFSET = 1.5;
 const EXTRA_PADDING = 1;

@@ -19,6 +19,9 @@ let theme = createTheme({
     background: {
       default: 'rgb(241, 242, 245)'
     },
+    error: {
+      main: '#ff7043'
+    }
   },
   typography: {
     "fontFamily": "'Open Sans',system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji",

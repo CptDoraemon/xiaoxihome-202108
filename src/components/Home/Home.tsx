@@ -3,6 +3,8 @@ import {makeStyles} from "@material-ui/core";
 import Cover from "./Cover";
 import Timeline from "./Timeline";
 import Footer from "./Footer";
+import SectionTitle from "./SectionTitle";
+import HireForm from "./HireForm/HireForm";
 
 interface HomeProps {}
 
@@ -30,7 +32,13 @@ const Home = () => {
     <div className={classes.root}>
       <div className={classes.widthWrapper}>
         <Cover/>
+
+        <SectionTitle title={'My experience in'} subTitle={'Web development'} />
         <Timeline/>
+
+        <SectionTitle title={'Wanna hire me?'} subTitle={`let's get in touch`} />
+        <HireForm/>
+
         <Footer/>
       </div>
     </div>
