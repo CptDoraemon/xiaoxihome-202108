@@ -142,7 +142,6 @@ const useWebGLBackground = <TContainerEl extends HTMLElement>(canMount: boolean)
       folderWater.add( waterUniforms.size, 'value', 0.1, 10, 0.1 ).name( 'size' );
       folderWater.open();
 
-      //
 
       window.addEventListener( 'resize', onWindowResize );
 
