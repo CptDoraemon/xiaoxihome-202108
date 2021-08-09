@@ -39,11 +39,6 @@ const useStyles = makeStyles((theme) => {
       width: '100%',
       height: '100%',
       backgroundColor: theme.palette.secondary.main,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'relative'
     },
     paperBg: {
       width: '100%',
@@ -58,7 +53,10 @@ const useStyles = makeStyles((theme) => {
       top: 0,
       left: 0,
       zIndex: 2,
-      // display: 'none'
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center'
     },
     topRow: {
       ...rowWidth,
