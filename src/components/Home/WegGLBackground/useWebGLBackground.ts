@@ -20,7 +20,7 @@ const useWebGLBackground = <TContainerEl extends HTMLElement>(canMount: boolean)
     const container = containerRef.current;
     const renderer = new THREE.WebGLRenderer();
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera( 55, window.innerWidth / window.innerHeight, 1, 20000 );
+    const camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 20000 );
 
     const sun = new THREE.Vector3();
     // const controls = new OrbitControls( camera, renderer.domElement );
@@ -42,7 +42,8 @@ const useWebGLBackground = <TContainerEl extends HTMLElement>(canMount: boolean)
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       containerRef.current.appendChild( renderer.domElement );
 
-      camera.position.set( 30, 30, 100 );
+      camera.position.set( 0, 20, 0 );
+      camera.lookAt(4, 20, 10);
 
       // Water
 
@@ -76,14 +77,14 @@ const useWebGLBackground = <TContainerEl extends HTMLElement>(canMount: boolean)
 
       const skyUniforms = sky.material.uniforms;
 
-      skyUniforms[ 'turbidity' ].value = 10;
+      skyUniforms[ 'turbidity' ].value = 2;
       skyUniforms[ 'rayleigh' ].value = 2;
       skyUniforms[ 'mieCoefficient' ].value = 0.005;
       skyUniforms[ 'mieDirectionalG' ].value = 0.8;
 
       const parameters = {
         elevation: 2,
-        azimuth: 180
+        azimuth: 0,
       };
 
       const pmremGenerator = new THREE.PMREMGenerator( renderer );
@@ -174,7 +175,7 @@ const useWebGLBackground = <TContainerEl extends HTMLElement>(canMount: boolean)
       // mesh.rotation.z = time * 0.51;
 
       // @ts-ignore
-      water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
+      water.material.uniforms[ 'time' ].value += 0.3 / 60.0;
 
       renderer.render( scene, camera );
 

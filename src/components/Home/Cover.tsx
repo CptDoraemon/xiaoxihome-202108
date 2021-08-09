@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => {
       width: '100%',
       height: '100%',
       backgroundColor: theme.palette.secondary.main,
+      position: 'relative',
     },
     paperBg: {
       width: '100%',
