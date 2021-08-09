@@ -148,11 +148,12 @@ const useWebGLBackground = <TContainerEl extends HTMLElement>(canMount: boolean)
     }
 
     function onWindowResize() {
-
-      camera.aspect = window.innerWidth / window.innerHeight;
+      const canvasWidth = container.getBoundingClientRect().width;
+      const canvasHeight = container.getBoundingClientRect().height;
+      camera.aspect = canvasWidth / canvasHeight;
       camera.updateProjectionMatrix();
 
-      renderer.setSize( window.innerWidth, window.innerHeight );
+      renderer.setSize(canvasWidth, canvasHeight);
 
     }
 
