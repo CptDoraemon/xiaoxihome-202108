@@ -23,7 +23,7 @@ const useWebGLBackground = <TContainerEl extends HTMLElement>(canMount: boolean)
     const camera = new THREE.PerspectiveCamera( 55, window.innerWidth / window.innerHeight, 1, 20000 );
 
     const sun = new THREE.Vector3();
-    const controls = new OrbitControls( camera, renderer.domElement );
+    // const controls = new OrbitControls( camera, renderer.domElement );
     let water: Water;
     // let mesh: THREE.Mesh;
 
@@ -116,11 +116,11 @@ const useWebGLBackground = <TContainerEl extends HTMLElement>(canMount: boolean)
 
       //
 
-      controls.maxPolarAngle = Math.PI * 0.495;
-      controls.target.set( 0, 10, 0 );
-      controls.minDistance = 40.0;
-      controls.maxDistance = 200.0;
-      controls.update();
+      // controls.maxPolarAngle = Math.PI * 0.495;
+      // controls.target.set( 0, 10, 0 );
+      // controls.minDistance = 40.0;
+      // controls.maxDistance = 200.0;
+      // controls.update();
 
       //
       container.appendChild( stats.dom );
