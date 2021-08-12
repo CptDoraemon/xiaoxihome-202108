@@ -1,13 +1,14 @@
 import {useCallback, useEffect, useRef} from "react";
 import * as THREE from 'three';
+import {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
+import Stats from 'three/examples/jsm/libs/stats.module'
 
-import Stats from 'three/examples/jsm/libs/stats.module.js';
-
-// @ts-ignore
-import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { Water } from 'three/examples/jsm/objects/Water.js';
-import { Sky } from 'three/examples/jsm/objects/Sky.js';
+//@ts-ignore
+import * as SPECTOR from 'spectorjs';
+const spector = new SPECTOR.Spector();
+spector.displayUI();
 
 const useWebGLBackground = <TContainerEl extends HTMLElement>(canMount: boolean) => {
   const containerRef = useRef<TContainerEl>(null);
@@ -18,168 +19,91 @@ const useWebGLBackground = <TContainerEl extends HTMLElement>(canMount: boolean)
     }
 
     const container = containerRef.current;
-    const renderer = new THREE.WebGLRenderer();
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true
+    });
+    renderer.setSize( container.getBoundingClientRect().width, container.getBoundingClientRect().height );
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    containerRef.current.appendChild( renderer.domElement );
+
+    const stats = Stats();
+    stats.domElement.style.zIndex = '1000';
+    containerRef.current.appendChild(stats.dom);
+
     const scene = new THREE.Scene();
+
     const camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 20000 );
+    camera.position.set( 10, 10, 10 );
+    camera.lookAt(0, 0, 0);
 
-    const sun = new THREE.Vector3();
-    // const controls = new OrbitControls( camera, renderer.domElement );
-    let water: Water;
-    // let mesh: THREE.Mesh;
+    const light = new THREE.AmbientLight( 0x404040 );
+    scene.add( light );
 
-    // @ts-ignore
-    const stats = new Stats();
+    const controls = new OrbitControls( camera, renderer.domElement );
 
-    init();
-    animate();
+    /**
+     * Loaders
+     */
+    // Texture loader
+    const textureLoader = new THREE.TextureLoader();
 
-    function init() {
-      if (!containerRef.current) {
-        return
-      }
+    // Draco loader
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('/assets/webgl/draco/');
 
-      renderer.setSize( container.getBoundingClientRect().width, container.getBoundingClientRect().height );
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      containerRef.current.appendChild( renderer.domElement );
+    // GLTF loader
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.setDRACOLoader(dracoLoader);
 
-      camera.position.set( 0, 20, 0 );
-      camera.lookAt(4, 20, 10);
+    /**
+     * Textures
+     */
+    const bakedTextures = textureLoader.load('/assets/webgl/baked.jpg');
+    bakedTextures.flipY = false;
+    bakedTextures.encoding = THREE.sRGBEncoding;
 
-      // Water
+    /**
+     * Materials
+     */
+    const bakedMaterial = new THREE.MeshBasicMaterial({map: bakedTextures});
+    const poleLightMaterial = new THREE.MeshBasicMaterial({color: 0xffffe5});
+    const portalLightMaterial = new THREE.MeshBasicMaterial({color: 0xfffff, side: THREE.DoubleSide});
 
-      const waterGeometry = new THREE.PlaneGeometry( 10000, 10000 );
-
-      water = new Water(
-        waterGeometry,
-        {
-          textureWidth: 512,
-          textureHeight: 512,
-          waterNormals: new THREE.TextureLoader().load( '/assets/webgl/textures/waternormals.jpeg', function ( texture ) {
-            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-          } ),
-          sunDirection: new THREE.Vector3(),
-          sunColor: 0xffffff,
-          waterColor: 0x001e0f,
-          distortionScale: 3.7,
-          fog: scene.fog !== undefined
+    /**
+     * Model
+     */
+    gltfLoader.load(
+      '/assets/webgl/portal.glb',
+      (gltf) =>
+      {
+        console.log(gltf.scene);
+        const map: {[key: string]: any} = {
+          'Cube012': poleLightMaterial,
+          'Cube018': poleLightMaterial,
+          'Circle': portalLightMaterial
         }
-      );
-
-      water.rotation.x = - Math.PI / 2;
-
-      scene.add( water );
-
-      // Skybox
-
-      const sky = new Sky();
-      sky.scale.setScalar( 10000 );
-      scene.add( sky );
-
-      const skyUniforms = sky.material.uniforms;
-
-      skyUniforms[ 'turbidity' ].value = 2;
-      skyUniforms[ 'rayleigh' ].value = 2;
-      skyUniforms[ 'mieCoefficient' ].value = 0.005;
-      skyUniforms[ 'mieDirectionalG' ].value = 0.8;
-
-      const parameters = {
-        elevation: 2,
-        azimuth: 0,
-      };
-
-      const pmremGenerator = new THREE.PMREMGenerator( renderer );
-
-      function updateSun() {
-
-        const phi = THREE.MathUtils.degToRad( 90 - parameters.elevation );
-        const theta = THREE.MathUtils.degToRad( parameters.azimuth );
-
-        sun.setFromSphericalCoords( 1, phi, theta );
-
-        sky.material.uniforms[ 'sunPosition' ].value.copy( sun );
-        // @ts-ignore
-        water.material.uniforms[ 'sunDirection' ].value.copy( sun ).normalize();
-
-        // @ts-ignore
-        scene.environment = pmremGenerator.fromScene( sky ).texture;
-
+        gltf.scene.traverse(child => {
+          if (map[child.name] !== undefined) {
+            // @ts-ignore
+            child.material = map[child.name]
+          } else {
+            // @ts-ignore
+            child.material = bakedMaterial
+          }
+        })
+        scene.add(gltf.scene);
       }
-
-      updateSun();
-
-      //
-
-      const geometry = new THREE.BoxGeometry( 30, 30, 30 );
-      const material = new THREE.MeshStandardMaterial( { roughness: 0 } );
-
-      // mesh = new THREE.Mesh( geometry, material );
-      // scene.add( mesh );
-
-      //
-
-      // controls.maxPolarAngle = Math.PI * 0.495;
-      // controls.target.set( 0, 10, 0 );
-      // controls.minDistance = 40.0;
-      // controls.maxDistance = 200.0;
-      // controls.update();
-
-      //
-      container.appendChild( stats.dom );
-
-      // GUI
-
-      const gui = new GUI();
-
-      const folderSky = gui.addFolder( 'Sky' );
-      folderSky.add( parameters, 'elevation', 0, 90, 0.1 ).onChange( updateSun );
-      folderSky.add( parameters, 'azimuth', - 180, 180, 0.1 ).onChange( updateSun );
-      folderSky.open();
-
-      // @ts-ignore
-      const waterUniforms = water.material.uniforms;
-
-      const folderWater = gui.addFolder( 'Water' );
-      folderWater.add( waterUniforms.distortionScale, 'value', 0, 8, 0.1 ).name( 'distortionScale' );
-      folderWater.add( waterUniforms.size, 'value', 0.1, 10, 0.1 ).name( 'size' );
-      folderWater.open();
-
-
-      window.addEventListener( 'resize', onWindowResize );
-
-    }
-
-    function onWindowResize() {
-      const canvasWidth = container.getBoundingClientRect().width;
-      const canvasHeight = container.getBoundingClientRect().height;
-      camera.aspect = canvasWidth / canvasHeight;
-      camera.updateProjectionMatrix();
-
-      renderer.setSize(canvasWidth, canvasHeight);
-
-    }
+    )
 
     function animate() {
-
       requestAnimationFrame( animate );
-      render();
+
+      controls.update();
       stats.update();
-
-    }
-
-    function render() {
-
-      // const time = performance.now() * 0.001;
-
-      // mesh.position.y = Math.sin( time ) * 20 + 5;
-      // mesh.rotation.x = time * 0.5;
-      // mesh.rotation.z = time * 0.51;
-
-      // @ts-ignore
-      water.material.uniforms[ 'time' ].value += 0.3 / 60.0;
-
       renderer.render( scene, camera );
-
     }
+    animate();
+
 
   }, []);
 
