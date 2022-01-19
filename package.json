@@ -12,6 +12,7 @@
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
+    "babylonjs": "^4.2.1",
     "joi": "^17.4.2",
     "lightgallery": "^2.1.8",
     "next": "11.0.1",

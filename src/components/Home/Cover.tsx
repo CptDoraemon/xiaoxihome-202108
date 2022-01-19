@@ -6,6 +6,7 @@ import SlideUpText from "./SlideUpText";
 import {MOBILE} from "../../theme";
 import useGetFullscreenHeight from "../../utils/useGetFullscreenHeight";
 import {ARROW_HEIGHT} from "./SectionTitle";
+import CoverCanvas from "./CoverCanvas/CoverCanvas";
 
 interface CoverProps {}
 
@@ -32,12 +33,25 @@ const useStyles = makeStyles((theme) => {
     paper: {
       width: '100%',
       height: '100%',
-      backgroundColor: theme.palette.secondary.main,
+      position: 'relative',
+    },
+    contentWrapper: {
+      width: '100%',
+      height: '100%',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      position: 'relative'
+      position: 'relative',
+      zIndex: 20
+    },
+    canvas: {
+      width: '100%',
+      height: '100%',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      zIndex: 10
     },
     topRow: {
       ...rowWidth,
@@ -144,38 +158,41 @@ const Cover = () => {
           </IconButton>
         </div>
 
-        <div className={classes.rowWrapper}>
-          <div className={classes.row}>
-            <div className={classes.titleWrapper}>
-              <Typography variant={'h5'} component={'h2'} className={clsx(classes.subTitle)}>
-                <SlideUpText baseDelay={200}>
-                  Hi there, this is Xiaoxi (Jake)
-                </SlideUpText>
-              </Typography>
-              <Typography variant={'h3'} component={'h1'} className={classes.title}>
-                <SlideUpText baseDelay={300}>
-                  Welcome to my home, I store my works here
-                </SlideUpText>
-              </Typography>
-              <Button variant={'contained'} disableElevation className={classes.button} color={'primary'}>
-                Read More
-              </Button>
-            </div>
-          </div>
-          <div className={classes.row}>
-            <div className={classes.aspectRatioWrapper}>
-              <div className={classes.square}>
+        {/*<div className={classes.contentWrapper}>*/}
+        {/*  <div className={classes.rowWrapper}>*/}
+        {/*    <div className={classes.row}>*/}
+        {/*      <div className={classes.titleWrapper}>*/}
+        {/*        <Typography variant={'h5'} component={'h2'} className={clsx(classes.subTitle)}>*/}
+        {/*          <SlideUpText baseDelay={200}>*/}
+        {/*            Hi there, this is Xiaoxi (Jake)*/}
+        {/*          </SlideUpText>*/}
+        {/*        </Typography>*/}
+        {/*        <Typography variant={'h3'} component={'h1'} className={classes.title}>*/}
+        {/*          <SlideUpText baseDelay={300}>*/}
+        {/*            Welcome to my home, I store my works here*/}
+        {/*          </SlideUpText>*/}
+        {/*        </Typography>*/}
+        {/*        <Button variant={'contained'} disableElevation className={classes.button} color={'primary'}>*/}
+        {/*          Read More*/}
+        {/*        </Button>*/}
+        {/*      </div>*/}
+        {/*    </div>*/}
+        {/*    <div className={classes.row}>*/}
+        {/*      <div className={classes.aspectRatioWrapper}>*/}
+        {/*        <div className={classes.payload}>*/}
 
-              </div>
-              <div className={classes.payload}>
+        {/*        </div>*/}
+        {/*      </div>*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
 
-              </div>
-            </div>
-          </div>
-        </div>
+        {/*  <div className={classes.bottomRow}>*/}
 
-        <div className={classes.bottomRow}>
+        {/*  </div>*/}
+        {/*</div>*/}
 
+        <div className={classes.canvas}>
+          <CoverCanvas/>
         </div>
       </Paper>
     </div>
