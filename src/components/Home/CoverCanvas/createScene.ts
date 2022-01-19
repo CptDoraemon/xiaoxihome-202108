@@ -13,6 +13,11 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
     scene
   );
 
+  // environment
+  const hdrTexture = new BABYLON.HDRCubeTexture("/assets/sky.hdr", scene, 128, false, true, false, true);
+  scene.environmentTexture = hdrTexture;
+  scene.clearColor = BABYLON.Color3.FromHexString('#80e5f7').toColor4(1);
+
   const importedCamera = scene.getCameraByName("Camera");
   console.log(importedCamera);
   importedCamera?.dispose();
