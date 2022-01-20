@@ -1,5 +1,6 @@
 import * as BABYLON from 'babylonjs';
 import showWorldAxis from "./WorldAxis";
+import * as MATERIAL from 'babylonjs-materials';
 
 const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasElement) {
   const scene = new BABYLON.Scene(engine);
@@ -14,13 +15,38 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   );
 
   // environment
-  const hdrTexture = new BABYLON.HDRCubeTexture("/assets/sky.hdr", scene, 128, false, true, false, true);
-  scene.environmentTexture = hdrTexture;
-  scene.clearColor = BABYLON.Color3.FromHexString('#80e5f7').toColor4(1);
+  // const hdrTexture = new BABYLON.HDRCubeTexture("/assets/sky.hdr", scene, 128, false, true, false, true);
+  // scene.environmentTexture = hdrTexture;
+  //sky
+  const skyBox = BABYLON.Mesh.CreateBox("skyBox", 100.0, scene);
+  const skyMaterial = new MATERIAL.SkyMaterial('sky', scene);
+  skyMaterial.backFaceCulling = false;
+  skyMaterial.luminance = 1; // Controls the overall luminance of sky in interval ]0, 1,190[
+  skyMaterial.turbidity = 1; // Represents the amount (scattering) of haze as opposed to molecules in atmosphere
+  skyMaterial.inclination = 0.4; // The solar inclination, related to the solar azimuth in interval [0, 1]
+  skyMaterial.azimuth = 0.25; // The solar azimuth in interval [0, 1]
+  skyBox.material = skyMaterial;
 
   const importedCamera = scene.getCameraByName("Camera");
   console.log(importedCamera);
   importedCamera?.dispose();
+
+  // lights
+  const light = new BABYLON.DirectionalLight('Sun', new BABYLON.Vector3(-2, -1, 2.5), scene);
+  light.intensity = 0.2;
+  light.diffuse = BABYLON.Color3.FromHexString('#FFA757');
+
+  const hl = new BABYLON.HemisphericLight('Hl',new BABYLON.Vector3(0,1,0),scene);
+  hl.intensity = 0.7;
+
+  const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 4, height: 4, subdivisions: 128 }, scene);
+  ground.position = new BABYLON.Vector3(0, -0.6, 0);
+  ground.scaling = new BABYLON.Vector3(10, 2, 10);
+  ground.rotation.y = Math.PI*2;
+
+  BABYLON.NodeMaterial.ParseFromSnippetAsync("#3FU5FG#1", scene).then((mat) => {
+    ground.material = mat;
+  });
 
   // const envLight = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 5, 0), scene);
   // envLight.intensity = 0.5;
@@ -42,7 +68,7 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
     -0.6 * Math.PI,
     0.25 * Math.PI,
     Math.PI,
-    new BABYLON.Vector3(0, 0, 0),
+    new BABYLON.Vector3(0, 1, 0),
     scene
   );
   // camera.lockedTarget = sphere1.mesh;
@@ -54,6 +80,7 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   camera.upperBetaLimit = 0.48 * Math.PI;
   camera.lowerRadiusLimit = 2;
   camera.upperRadiusLimit = 200;
+  camera.fov = 1.4;
 
   return scene;
 };
