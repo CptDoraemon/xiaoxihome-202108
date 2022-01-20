@@ -1,6 +1,7 @@
 import * as BABYLON from 'babylonjs';
 import showWorldAxis from "./WorldAxis";
 import * as MATERIAL from 'babylonjs-materials';
+import initOceanShader from "./shaders/oceanShader";
 
 const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasElement) {
   const scene = new BABYLON.Scene(engine);
@@ -27,8 +28,28 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   skyMaterial.azimuth = 0.25; // The solar azimuth in interval [0, 1]
   skyBox.material = skyMaterial;
 
+  //water
+  const waterMesh = BABYLON.Mesh.CreateGround("waterMesh", 64, 64, 32, scene, false);
+  waterMesh.position = new BABYLON.Vector3(0, -1, 0);
+  initOceanShader();
+  const waterMaterial = new BABYLON.ShaderMaterial(
+    "oceanShaderMaterial",
+    scene,
+    {
+      vertex: "ocean",
+      fragment: "ocean",
+    },
+    {
+      attributes: ["position", "normal", "uv"],
+      uniforms: ["world", "worldView", "worldViewProjection", "view", "projection"],
+    },
+  );
+  var mainTexture = new BABYLON.Texture("/assets/amiga.jpeg", scene);
+  waterMaterial.setTexture("textureSampler", mainTexture);
+  waterMaterial.backFaceCulling = false;
+  waterMesh.material = waterMaterial;
+
   const importedCamera = scene.getCameraByName("Camera");
-  console.log(importedCamera);
   importedCamera?.dispose();
 
   // lights
@@ -38,15 +59,6 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
 
   const hl = new BABYLON.HemisphericLight('Hl',new BABYLON.Vector3(0,1,0),scene);
   hl.intensity = 0.7;
-
-  const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 4, height: 4, subdivisions: 128 }, scene);
-  ground.position = new BABYLON.Vector3(0, -0.6, 0);
-  ground.scaling = new BABYLON.Vector3(10, 2, 10);
-  ground.rotation.y = Math.PI*2;
-
-  BABYLON.NodeMaterial.ParseFromSnippetAsync("#3FU5FG#1", scene).then((mat) => {
-    ground.material = mat;
-  });
 
   // const envLight = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 5, 0), scene);
   // envLight.intensity = 0.5;
