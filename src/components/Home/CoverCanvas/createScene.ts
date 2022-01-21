@@ -11,46 +11,27 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
 
   await BABYLON.SceneLoader.AppendAsync(
     "/assets/",
-    "toronto.babylon",
+    "cn_tower_n_city_hall.babylon",
     scene
   );
 
-  // environment
-  // const hdrTexture = new BABYLON.HDRCubeTexture("/assets/sky.hdr", scene, 128, false, true, false, true);
-  // scene.environmentTexture = hdrTexture;
   //sky
   const skyBox = BABYLON.Mesh.CreateBox("skyBox", 100.0, scene);
   const skyMaterial = new MATERIAL.SkyMaterial('sky', scene);
   skyMaterial.backFaceCulling = false;
   skyMaterial.luminance = 1; // Controls the overall luminance of sky in interval ]0, 1,190[
   skyMaterial.turbidity = 1; // Represents the amount (scattering) of haze as opposed to molecules in atmosphere
-  skyMaterial.inclination = 0.4; // The solar inclination, related to the solar azimuth in interval [0, 1]
-  skyMaterial.azimuth = 0.25; // The solar azimuth in interval [0, 1]
+  // skyMaterial.inclination = 0.4; // The solar inclination, related to the solar azimuth in interval [0, 1]
+  // skyMaterial.azimuth = 0.2; // The solar azimuth in interval [0, 1]
+  skyMaterial.useSunPosition = true; // Do not set sun position from azimuth and inclination
+  skyMaterial.sunPosition = new BABYLON.Vector3(-10, 5, 100);
   skyBox.material = skyMaterial;
 
-  //water
-  const waterMesh = BABYLON.Mesh.CreateGround("waterMesh", 64, 64, 32, scene, false);
-  waterMesh.position = new BABYLON.Vector3(0, -1, 0);
-  initOceanShader();
-  const waterMaterial = new BABYLON.ShaderMaterial(
-    "oceanShaderMaterial",
-    scene,
-    {
-      vertex: "ocean",
-      fragment: "ocean",
-    },
-    {
-      attributes: ["position", "normal", "uv"],
-      uniforms: ["world", "worldView", "worldViewProjection", "view", "projection"],
-    },
-  );
-  var mainTexture = new BABYLON.Texture("/assets/amiga.jpeg", scene);
-  waterMaterial.setTexture("textureSampler", mainTexture);
-  waterMaterial.backFaceCulling = false;
-  waterMesh.material = waterMaterial;
 
   const importedCamera = scene.getCameraByName("Camera");
-  importedCamera?.dispose();
+  const importedCameraTarget = scene.getMeshByName('cameraTarget');
+  //@ts-ignore
+  importedCamera.lockedTarget = importedCameraTarget;
 
   // lights
   const light = new BABYLON.DirectionalLight('Sun', new BABYLON.Vector3(-2, -1, 2.5), scene);
@@ -75,24 +56,24 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   // shadowGenerator.addShadowCaster(sphere2.mesh);
 
 
-  const camera = new BABYLON.ArcRotateCamera(
-    "camera",
-    -0.6 * Math.PI,
-    0.25 * Math.PI,
-    Math.PI,
-    new BABYLON.Vector3(0, 1, 0),
-    scene
-  );
-  // camera.lockedTarget = sphere1.mesh;
-  camera.attachControl();
-
-  camera.radius = 30;
-  camera.wheelPrecision = 20;
-  camera.lowerBetaLimit = 0.25 * Math.PI;
-  camera.upperBetaLimit = 0.48 * Math.PI;
-  camera.lowerRadiusLimit = 2;
-  camera.upperRadiusLimit = 200;
-  camera.fov = 1.4;
+  // const camera = new BABYLON.ArcRotateCamera(
+  //   "camera",
+  //   -0.6 * Math.PI,
+  //   0.25 * Math.PI,
+  //   Math.PI,
+  //   new BABYLON.Vector3(0, 1, 0),
+  //   scene
+  // );
+  // // camera.lockedTarget = sphere1.mesh;
+  // camera.attachControl();
+  //
+  // camera.radius = 30;
+  // camera.wheelPrecision = 20;
+  // camera.lowerBetaLimit = 0.25 * Math.PI;
+  // camera.upperBetaLimit = 0.48 * Math.PI;
+  // camera.lowerRadiusLimit = 2;
+  // camera.upperRadiusLimit = 200;
+  // camera.fov = 1.4;
 
   return scene;
 };
