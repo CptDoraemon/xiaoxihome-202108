@@ -32,6 +32,7 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   const importedCameraTarget = scene.getMeshByName('cameraTarget');
   //@ts-ignore
   importedCamera.lockedTarget = importedCameraTarget;
+  // importedCamera?.attachControl()
 
   // lights
   const light = new BABYLON.DirectionalLight('Sun', new BABYLON.Vector3(-2, -1, 2.5), scene);
