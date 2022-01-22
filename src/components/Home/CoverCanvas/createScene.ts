@@ -27,12 +27,11 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   skyMaterial.sunPosition = new BABYLON.Vector3(-10, 5, 100);
   skyBox.material = skyMaterial;
 
-
   const importedCamera = scene.getCameraByName("Camera");
   const importedCameraTarget = scene.getMeshByName('cameraTarget');
   //@ts-ignore
-  importedCamera.lockedTarget = importedCameraTarget;
-  // importedCamera?.attachControl()
+  // importedCamera.lockedTarget = importedCameraTarget;
+  importedCamera?.attachControl()
 
   // lights
   const light = new BABYLON.DirectionalLight('Sun', new BABYLON.Vector3(-2, -1, 2.5), scene);
@@ -41,6 +40,22 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
 
   const hl = new BABYLON.HemisphericLight('Hl',new BABYLON.Vector3(0,1,0),scene);
   hl.intensity = 0.7;
+
+  // importedLights
+  const cnTowerBaseSpotLights = [
+    scene.getLightByName('cnTowerBaseSpotlight.001'),
+    scene.getLightByName('cnTowerBaseSpotlight.002'),
+    scene.getLightByName('cnTowerBaseSpotlight.003')
+  ];
+
+  const cnTowerCenterSpotLights = [
+    scene.getLightByName('cnTowerBaseSpotlight.001'),
+    scene.getLightByName('cnTowerBaseSpotlight.002'),
+    scene.getLightByName('cnTowerBaseSpotlight.003')
+  ];
+
+  cnTowerBaseSpotLights.forEach(light => light!.intensity = 0.05);
+  cnTowerCenterSpotLights.forEach(light => light!.intensity = 0.05)
 
   // const envLight = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 5, 0), scene);
   // envLight.intensity = 0.5;
