@@ -10,7 +10,7 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   scene.debugLayer.show();
 
   await BABYLON.SceneLoader.AppendAsync(
-    "/assets/",
+    "/assets/imported/",
     "cn_tower_n_city_hall.babylon",
     scene
   );
