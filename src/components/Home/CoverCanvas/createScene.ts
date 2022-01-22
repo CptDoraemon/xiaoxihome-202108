@@ -31,31 +31,31 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   const importedCameraTarget = scene.getMeshByName('cameraTarget');
   //@ts-ignore
   importedCamera.lockedTarget = importedCameraTarget;
-  // importedCamera?.attachControl()
+  // importedCamera?.attachControl();
+  // importedCamera?.dispose();
 
   // lights
-  const light = new BABYLON.DirectionalLight('Sun', new BABYLON.Vector3(-2, -1, 2.5), scene);
-  light.intensity = 0.2;
-  light.diffuse = BABYLON.Color3.FromHexString('#FFA757');
+  // const light = new BABYLON.DirectionalLight('Sun', new BABYLON.Vector3(0, -2, 0), scene);
+  // light.intensity = 1;
 
   const hl = new BABYLON.HemisphericLight('Hl',new BABYLON.Vector3(0,1,0),scene);
-  hl.intensity = 0.7;
+  hl.intensity = 1;
 
   // importedLights
-  const cnTowerBaseSpotLights = [
-    scene.getLightByName('cnTowerBaseSpotlight.001'),
-    scene.getLightByName('cnTowerBaseSpotlight.002'),
-    scene.getLightByName('cnTowerBaseSpotlight.003')
-  ];
-
-  const cnTowerCenterSpotLights = [
-    scene.getLightByName('cnTowerBaseSpotlight.001'),
-    scene.getLightByName('cnTowerBaseSpotlight.002'),
-    scene.getLightByName('cnTowerBaseSpotlight.003')
-  ];
-
-  cnTowerBaseSpotLights.forEach(light => light!.intensity = 0.05);
-  cnTowerCenterSpotLights.forEach(light => light!.intensity = 0.05)
+  // const cnTowerBaseSpotLights = [
+  //   scene.getLightByName('cnTowerBaseSpotlight.001'),
+  //   scene.getLightByName('cnTowerBaseSpotlight.002'),
+  //   scene.getLightByName('cnTowerBaseSpotlight.003')
+  // ];
+  //
+  // const cnTowerCenterSpotLights = [
+  //   scene.getLightByName('cnTowerBaseSpotlight.001'),
+  //   scene.getLightByName('cnTowerBaseSpotlight.002'),
+  //   scene.getLightByName('cnTowerBaseSpotlight.003')
+  // ];
+  //
+  // cnTowerBaseSpotLights.forEach(light => light!.intensity = 0.05);
+  // cnTowerCenterSpotLights.forEach(light => light!.intensity = 0.05)
 
   // const envLight = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 5, 0), scene);
   // envLight.intensity = 0.5;
