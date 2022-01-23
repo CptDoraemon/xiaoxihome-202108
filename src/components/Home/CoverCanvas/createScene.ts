@@ -16,16 +16,16 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   );
 
   //sky
-  const skyBox = BABYLON.Mesh.CreateBox("skyBox", 100.0, scene);
-  const skyMaterial = new MATERIAL.SkyMaterial('sky', scene);
-  skyMaterial.backFaceCulling = false;
-  skyMaterial.luminance = 1; // Controls the overall luminance of sky in interval ]0, 1,190[
-  skyMaterial.turbidity = 1; // Represents the amount (scattering) of haze as opposed to molecules in atmosphere
-  // skyMaterial.inclination = 0.4; // The solar inclination, related to the solar azimuth in interval [0, 1]
-  // skyMaterial.azimuth = 0.2; // The solar azimuth in interval [0, 1]
-  skyMaterial.useSunPosition = true; // Do not set sun position from azimuth and inclination
-  skyMaterial.sunPosition = new BABYLON.Vector3(-10, 5, 100);
-  skyBox.material = skyMaterial;
+  // const skyBox = BABYLON.Mesh.CreateBox("skyBox", 100.0, scene);
+  // const skyMaterial = new MATERIAL.SkyMaterial('sky', scene);
+  // skyMaterial.backFaceCulling = false;
+  // skyMaterial.luminance = 1; // Controls the overall luminance of sky in interval ]0, 1,190[
+  // skyMaterial.turbidity = 1; // Represents the amount (scattering) of haze as opposed to molecules in atmosphere
+  // // skyMaterial.inclination = 0.4; // The solar inclination, related to the solar azimuth in interval [0, 1]
+  // // skyMaterial.azimuth = 0.2; // The solar azimuth in interval [0, 1]
+  // skyMaterial.useSunPosition = true; // Do not set sun position from azimuth and inclination
+  // skyMaterial.sunPosition = new BABYLON.Vector3(-10, 5, 100);
+  // skyBox.material = skyMaterial;
 
   const importedCamera = scene.getCameraByName("Camera");
   const importedCameraTarget = scene.getMeshByName('cameraTarget');
@@ -42,20 +42,6 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   hl.intensity = 1;
 
   // importedLights
-  // const cnTowerBaseSpotLights = [
-  //   scene.getLightByName('cnTowerBaseSpotlight.001'),
-  //   scene.getLightByName('cnTowerBaseSpotlight.002'),
-  //   scene.getLightByName('cnTowerBaseSpotlight.003')
-  // ];
-  //
-  // const cnTowerCenterSpotLights = [
-  //   scene.getLightByName('cnTowerBaseSpotlight.001'),
-  //   scene.getLightByName('cnTowerBaseSpotlight.002'),
-  //   scene.getLightByName('cnTowerBaseSpotlight.003')
-  // ];
-  //
-  // cnTowerBaseSpotLights.forEach(light => light!.intensity = 0.05);
-  // cnTowerCenterSpotLights.forEach(light => light!.intensity = 0.05)
 
   // const envLight = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 5, 0), scene);
   // envLight.intensity = 0.5;
@@ -93,6 +79,41 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   camera.lowerRadiusLimit = distanceToTarget;
   camera.upperRadiusLimit = distanceToTarget;
   camera.fov = 1.4;
+  camera.panningSensibility = 0; // disable right mouse button drag / 2 finger move to move camera position
+
+  // volumetric light
+  const sunMesh = BABYLON.Mesh.CreatePlane("sunMesh", 2, scene);
+  const sunMeshMaterial = new BABYLON.StandardMaterial('sunSourceMaterial', scene);
+  sunMeshMaterial.diffuseColor = BABYLON.Color3.FromHexString('#fbe9e7');
+  sunMeshMaterial.backFaceCulling = false;
+  //@ts-ignore
+  sunMeshMaterial.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+  sunMeshMaterial.diffuseTexture = new BABYLON.Texture("/assets/sun.png", scene);
+  sunMeshMaterial.diffuseTexture.hasAlpha = true;
+  sunMesh.material = sunMeshMaterial;
+  sunMesh.position = new BABYLON.Vector3(-10, -2.5, 100);
+  const vls = new BABYLON.VolumetricLightScatteringPostProcess('godrays', 2, camera, sunMesh, 100, BABYLON.Texture.BILINEAR_SAMPLINGMODE, engine, false);
+  vls.useDiffuseColor = true;
+  vls.exposure = 0.8;
+
+  //render pipeline
+  const pipeline = new BABYLON.DefaultRenderingPipeline(
+    "defaultPipeline", // The name of the pipeline
+    true, // Do you want the pipeline to use HDR texture?
+    scene, // The scene instance
+    [camera] // The list of cameras to be attached to
+  );
+  pipeline.imageProcessing.vignetteEnabled = true;
+  pipeline.imageProcessing.vignetteColor = new BABYLON.Color4(0,0,0, 1);
+  pipeline.imageProcessing.vignetteWeight = 10;
+  pipeline.samples = 4;
+  // pipeline.fxaaEnabled = true;
+  pipeline.bloomEnabled = true;
+  pipeline.bloomWeight = 0.5;
+  pipeline.sharpenEnabled = true;
+  pipeline.sharpen.edgeAmount = 0.2; // default 0.3
+  pipeline.imageProcessing.contrast = 1; // default 1
+  pipeline.imageProcessing.exposure = 1; // default 1
 
   return scene;
 };
