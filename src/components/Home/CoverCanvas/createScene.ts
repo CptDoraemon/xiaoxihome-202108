@@ -92,9 +92,10 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   sunMeshMaterial.diffuseTexture.hasAlpha = true;
   sunMesh.material = sunMeshMaterial;
   sunMesh.position = new BABYLON.Vector3(-10, -2.5, 100);
-  const vls = new BABYLON.VolumetricLightScatteringPostProcess('godrays', 2, camera, sunMesh, 100, BABYLON.Texture.BILINEAR_SAMPLINGMODE, engine, false);
+  const vls = new BABYLON.VolumetricLightScatteringPostProcess('godrays', 1, camera, sunMesh, 100, BABYLON.Texture.BILINEAR_SAMPLINGMODE, engine, false);
   vls.useDiffuseColor = true;
   vls.exposure = 0.8;
+  vls.samples = 4;
 
   //render pipeline
   const pipeline = new BABYLON.DefaultRenderingPipeline(
@@ -106,7 +107,7 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   pipeline.imageProcessing.vignetteEnabled = true;
   pipeline.imageProcessing.vignetteColor = new BABYLON.Color4(0,0,0, 1);
   pipeline.imageProcessing.vignetteWeight = 10;
-  pipeline.samples = 4;
+  pipeline.samples = 1;
   // pipeline.fxaaEnabled = true;
   pipeline.bloomEnabled = true;
   pipeline.bloomWeight = 0.5;
