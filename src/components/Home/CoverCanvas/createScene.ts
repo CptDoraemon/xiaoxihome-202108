@@ -32,7 +32,7 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   //@ts-ignore
   importedCamera.lockedTarget = importedCameraTarget;
   // importedCamera?.attachControl();
-  // importedCamera?.dispose();
+  importedCamera?.dispose();
 
   // lights
   // const light = new BABYLON.DirectionalLight('Sun', new BABYLON.Vector3(0, -2, 0), scene);
@@ -72,24 +72,27 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   // shadowGenerator.addShadowCaster(sphere2.mesh);
 
 
-  // const camera = new BABYLON.ArcRotateCamera(
-  //   "camera",
-  //   -0.6 * Math.PI,
-  //   0.25 * Math.PI,
-  //   Math.PI,
-  //   new BABYLON.Vector3(0, 1, 0),
-  //   scene
-  // );
-  // // camera.lockedTarget = sphere1.mesh;
-  // camera.attachControl();
-  //
-  // camera.radius = 30;
-  // camera.wheelPrecision = 20;
-  // camera.lowerBetaLimit = 0.25 * Math.PI;
-  // camera.upperBetaLimit = 0.48 * Math.PI;
-  // camera.lowerRadiusLimit = 2;
-  // camera.upperRadiusLimit = 200;
-  // camera.fov = 1.4;
+  const targetVector = importedCameraTarget?.position || new BABYLON.Vector3(0, 0, 0);
+  const camera = new BABYLON.ArcRotateCamera(
+    "camera",
+    -0.5 * Math.PI,
+    0 * Math.PI,
+    Math.PI, // radius: the distance from the target
+    targetVector, // target
+    scene
+  );
+  // camera.lockedTarget = importedCameraTarget;
+  camera.attachControl();
+
+  camera.position = new BABYLON.Vector3(0, 0.5, -4);
+  camera.wheelPrecision = 20;
+  camera.lowerBetaLimit = 0.25 * Math.PI;
+  camera.upperBetaLimit = 0.6 * Math.PI;
+
+  const distanceToTarget = targetVector.subtract(camera.position).length();
+  camera.lowerRadiusLimit = distanceToTarget;
+  camera.upperRadiusLimit = distanceToTarget;
+  camera.fov = 1.4;
 
   return scene;
 };
