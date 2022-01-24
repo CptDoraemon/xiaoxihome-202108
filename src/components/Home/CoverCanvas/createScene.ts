@@ -2,6 +2,7 @@ import * as BABYLON from 'babylonjs';
 import showWorldAxis from "./WorldAxis";
 import * as MATERIAL from 'babylonjs-materials';
 import initOceanShader from "./shaders/oceanShader";
+import lowPolyWaterShader from "./shaders/lowPolyWaterShader";
 
 const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasElement) {
   const scene = new BABYLON.Scene(engine);
@@ -57,6 +58,27 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   // shadowGenerator.addShadowCaster(sphere1.mesh);
   // shadowGenerator.addShadowCaster(sphere2.mesh);
 
+  // low poly water
+  const water = BABYLON.MeshBuilder.CreatePlane("water", {size: 10}, scene);
+  water.position = new BABYLON.Vector3(0, -0.2, 0);
+  water.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI * 0.5);
+  water.increaseVertices(16);
+  lowPolyWaterShader();
+  const waterMat = new BABYLON.ShaderMaterial(
+    "waterMat",
+    scene,
+    {
+      vertex: "lowPolyWater",
+      fragment: "lowPolyWater",
+    },
+    {
+      attributes: ["position", "normal", "uv"],
+      uniforms: ["world", "worldView", "worldViewProjection", "view", "projection", "time", "textureSampler", "color"],
+    },
+  );
+  waterMat.setColor3('myColor', BABYLON.Color3.FromHexString('#74ccf4'));
+  water.material = waterMat;
+  // scene.forceWireframe = true;
 
   const targetVector = importedCameraTarget?.position || new BABYLON.Vector3(0, 0, 0);
   const camera = new BABYLON.ArcRotateCamera(
@@ -70,7 +92,7 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   // camera.lockedTarget = importedCameraTarget;
   camera.attachControl();
 
-  camera.position = new BABYLON.Vector3(0, 0.5, -4);
+  camera.position = new BABYLON.Vector3(0, 0.33, -4);
   camera.wheelPrecision = 20;
   camera.lowerBetaLimit = 0.25 * Math.PI;
   camera.upperBetaLimit = 0.6 * Math.PI;
@@ -91,7 +113,7 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   sunMeshMaterial.diffuseTexture = new BABYLON.Texture("/assets/sun.png", scene);
   sunMeshMaterial.diffuseTexture.hasAlpha = true;
   sunMesh.material = sunMeshMaterial;
-  sunMesh.position = new BABYLON.Vector3(-10, -2.5, 100);
+  sunMesh.position = new BABYLON.Vector3(-10, 0.5, 100);
   const vls = new BABYLON.VolumetricLightScatteringPostProcess('godrays', 1, camera, sunMesh, 100, BABYLON.Texture.BILINEAR_SAMPLINGMODE, engine, false);
   vls.useDiffuseColor = true;
   vls.exposure = 0.8;
