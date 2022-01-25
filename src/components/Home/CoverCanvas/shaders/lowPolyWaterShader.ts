@@ -56,7 +56,7 @@ varying vec2 vUV;
 uniform vec3 myColor;
 
 void main(void) {    
-    vec3 vLightPosition = vec3(-1, 1, 5);
+    vec3 vLightPosition = vec3(-2, 1, 12);
     
     // Light
     vec3 lightVectorW = normalize(vLightPosition - vPositionW);
