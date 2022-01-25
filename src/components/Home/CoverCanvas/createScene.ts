@@ -59,10 +59,9 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   // shadowGenerator.addShadowCaster(sphere2.mesh);
 
   // low poly water
-  const water = BABYLON.MeshBuilder.CreatePlane("water", {size: 10}, scene);
-  water.position = new BABYLON.Vector3(0, -0.2, 0);
-  water.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI * 0.5);
-  water.increaseVertices(16);
+  const water = BABYLON.MeshBuilder.CreateGround("water", {width: 10, height: 10, subdivisions: 16, updatable: true}, scene);
+  water.position = new BABYLON.Vector3(0, -0.3, 0);
+  // water.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI * 0.5);
   lowPolyWaterShader();
   const waterMat = new BABYLON.ShaderMaterial(
     "waterMat",
@@ -73,12 +72,19 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
     },
     {
       attributes: ["position", "normal", "uv"],
-      uniforms: ["world", "worldView", "worldViewProjection", "view", "projection", "time", "textureSampler", "color"],
+      uniforms: ["world", "worldView", "worldViewProjection", "view", "projection", "textureSampler", "color"],
     },
   );
   waterMat.setColor3('myColor', BABYLON.Color3.FromHexString('#74ccf4'));
+  waterMat.setFloat('myStrength', 0.2);
   water.material = waterMat;
   // scene.forceWireframe = true;
+
+  let time = 0.;
+  scene.registerBeforeRender(function() {
+    waterMat.setFloat("time", time);
+    time += 1;
+  });
 
   const targetVector = importedCameraTarget?.position || new BABYLON.Vector3(0, 0, 0);
   const camera = new BABYLON.ArcRotateCamera(

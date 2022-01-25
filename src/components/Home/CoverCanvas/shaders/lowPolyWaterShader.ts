@@ -11,6 +11,7 @@ attribute vec2 uv;
 uniform mat4 world;
 uniform mat4 worldViewProjection;
 uniform float time;
+uniform float myStrength;
 
 // Varying
 varying vec3 vPositionW;
@@ -28,8 +29,8 @@ float random(vec2 co) {
 
 void main() {
     vec3 p = position;
-    float bn = p.x;
-    p.y = p.y + random(vec2(floor(time / 1.0), gl_VertexID));
+    float id = float(gl_VertexID);
+    p.y = p.y + random(vec2(time, gl_VertexID)) * myStrength;
     
     vPositionW = vec3(world * vec4(position, 1.0));
     vNormalW = normalize(vec3(world * vec4(normal, 0.0)));
@@ -51,7 +52,51 @@ varying vec2 vUV;
 uniform vec3 myColor;
 
 void main(void) {
-    gl_FragColor = vec4(myColor, 1.);
+    float ToonThresholds[4];
+    ToonThresholds[0] = 0.95;
+    ToonThresholds[1] = 0.5;
+    ToonThresholds[2] = 0.2;
+    ToonThresholds[3] = 0.03;
+    
+    float ToonBrightnessLevels[5];
+    ToonBrightnessLevels[0] = 1.0;
+    ToonBrightnessLevels[1] = 0.8;
+    ToonBrightnessLevels[2] = 0.6;
+    ToonBrightnessLevels[3] = 0.35;
+    ToonBrightnessLevels[4] = 0.2;
+    
+    vec3 vLightPosition = vec3(-1, 1, 2);
+    
+    // Light
+    vec3 lightVectorW = normalize(vLightPosition - vPositionW);
+    
+    // diffuse
+    float ndl = max(0., dot(vNormalW, lightVectorW));
+    
+    vec3 color = myColor;
+    
+    if (ndl > ToonThresholds[0])
+    {
+        color *= ToonBrightnessLevels[0];
+    }
+    else if (ndl > ToonThresholds[1])
+    {
+        color *= ToonBrightnessLevels[1];
+    }
+    else if (ndl > ToonThresholds[2])
+    {
+        color *= ToonBrightnessLevels[2];
+    }
+    else if (ndl > ToonThresholds[3])
+    {
+        color *= ToonBrightnessLevels[3];
+    }
+    else
+    {
+        color *= ToonBrightnessLevels[4];
+    }
+    
+    gl_FragColor = vec4(color, 1.);
 }
   `;
 }
