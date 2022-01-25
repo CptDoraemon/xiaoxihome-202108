@@ -18,7 +18,7 @@ varying vec3 vPositionW;
 varying vec3 vNormalW;
 varying vec2 vUV;
 
-float random(vec2 co) {
+float getRandom(vec2 co) {
     float a = 12.9898;
     float b = 78.233;
     float c = 43758.5453;
@@ -27,10 +27,14 @@ float random(vec2 co) {
     return fract(sin(sn) * c);
 }
 
+float PI = radians(180.0);
+
 void main() {
     vec3 p = position;
     float id = float(gl_VertexID);
-    p.y = p.y + random(vec2(time, gl_VertexID)) * myStrength;
+    float tick = time / 60.0;
+    float random = getRandom(vec2(floor(tick/PI), gl_VertexID)); // fixed for vertexID, changes when sin() == 0
+    p.y = p.y + sin(tick) * random * myStrength;
     
     vPositionW = vec3(world * vec4(position, 1.0));
     vNormalW = normalize(vec3(world * vec4(normal, 0.0)));
