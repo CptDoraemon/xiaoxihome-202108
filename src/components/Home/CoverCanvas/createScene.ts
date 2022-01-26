@@ -3,6 +3,7 @@ import showWorldAxis from "./WorldAxis";
 import * as MATERIAL from 'babylonjs-materials';
 import initOceanShader from "./shaders/oceanShader";
 import lowPolyWaterShader from "./shaders/lowPolyWaterShader";
+import initAnimations from "./animations";
 
 const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasElement) {
   const scene = new BABYLON.Scene(engine);
@@ -85,6 +86,9 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
     waterMat.setFloat("time", time);
     time += 1;
   });
+
+  // animations
+  initAnimations(scene);
 
   const targetVector = importedCameraTarget?.position || new BABYLON.Vector3(0, 0, 0);
   const camera = new BABYLON.ArcRotateCamera(
