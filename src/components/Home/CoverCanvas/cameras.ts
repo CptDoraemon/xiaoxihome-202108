@@ -11,7 +11,20 @@ const initCameras = (scene: BABYLON.Scene) => {
   const airShipCamera = getAirShipCamera(scene);
 
   activeCamera = airShipCamera;
-  scene.switchActiveCamera(activeCamera, true)
+  scene.switchActiveCamera(activeCamera, false);
+
+  // update airShipCamera before render
+  const airShipCameraTarget = scene.getMeshByName('n');
+  const airShipTarget = scene.getMeshByName("airShipCar");
+  scene.onBeforeRenderObservable.add(() => {
+    if (
+      !airShipCameraTarget ||
+      !airShipTarget
+    ) return;
+    airShipCamera.position = airShipTarget.getAbsolutePosition();
+    airShipCamera.position.y += 2;
+    airShipCamera.target = airShipCameraTarget.position;
+  })
 
   return {
     activeCamera,
@@ -72,27 +85,8 @@ const getCnTowerCamera = (scene: BABYLON.Scene) => {
 }
 
 const getAirShipCamera = (scene: BABYLON.Scene) => {
-  const lockTarget = scene.getMeshByName('cameraTarget');
-
-  const radius = 2;
-  const beta = 0.35 * Math.PI;
-  const camera = new BABYLON.ArcRotateCamera(
-    "airShipCamera",
-    0,
-    beta,
-    radius, // radius: the distance from the target
-    new BABYLON.Vector3(0, 0, 0), // target
-    scene
-  );
-  camera.lockedTarget = lockTarget;
-  camera.position = new BABYLON.Vector3(0, 0, 0);
-
-  camera.wheelPrecision = 20;
-  camera.lowerBetaLimit = beta;
-  camera.upperBetaLimit = beta;
-
-  camera.fov = 0.7;
-  camera.panningSensibility = 0; // disable right mouse button drag / 2 finger move to move camera position
+  const camera = new BABYLON.FreeCamera("airShipCamera", new BABYLON.Vector3(0, -1, 0), scene);
+  camera.fov = 1.5;
 
   return camera
 }

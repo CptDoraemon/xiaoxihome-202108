@@ -42,7 +42,6 @@ const airShipAnimation = (scene: BABYLON.Scene) => {
     scene.getMeshByName('airShipBody'),
     scene.getMeshByName('airShipCanada.001'),
     scene.getMeshByName('airShipCanada.002'),
-    scene.getCameraByName('airShipCamera')
   ];
   const [
     propeller,
@@ -54,7 +53,6 @@ const airShipAnimation = (scene: BABYLON.Scene) => {
     airShipBody,
     airShipCanada1,
     airShipCanada2,
-    airShipCamera
   ] = airShipGroup;
 
   const frameRate = 30;
