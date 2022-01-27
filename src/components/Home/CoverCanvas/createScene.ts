@@ -4,6 +4,7 @@ import * as MATERIAL from 'babylonjs-materials';
 import initOceanShader from "./shaders/oceanShader";
 import lowPolyWaterShader from "./shaders/lowPolyWaterShader";
 import initAnimations from "./animations";
+import initCameras from "./cameras";
 
 const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasElement) {
   const scene = new BABYLON.Scene(engine);
@@ -28,13 +29,6 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   // skyMaterial.useSunPosition = true; // Do not set sun position from azimuth and inclination
   // skyMaterial.sunPosition = new BABYLON.Vector3(-10, 5, 100);
   // skyBox.material = skyMaterial;
-
-  const importedCamera = scene.getCameraByName("Camera");
-  const importedCameraTarget = scene.getMeshByName('cameraTarget');
-  //@ts-ignore
-  importedCamera.lockedTarget = importedCameraTarget;
-  // importedCamera?.attachControl();
-  importedCamera?.dispose();
 
   // lights
   // const light = new BABYLON.DirectionalLight('Sun', new BABYLON.Vector3(0, -2, 0), scene);
@@ -87,31 +81,12 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
     time += 1;
   });
 
+  // cameras
+  const {activeCamera: camera} = initCameras(scene);
+
   // animations
   initAnimations(scene);
 
-  const targetVector = importedCameraTarget?.position || new BABYLON.Vector3(0, 0, 0);
-  const camera = new BABYLON.ArcRotateCamera(
-    "camera",
-    -0.5 * Math.PI,
-    0 * Math.PI,
-    Math.PI, // radius: the distance from the target
-    targetVector, // target
-    scene
-  );
-  // camera.lockedTarget = importedCameraTarget;
-  camera.attachControl();
-
-  camera.position = new BABYLON.Vector3(0, 0.33, -4);
-  camera.wheelPrecision = 20;
-  camera.lowerBetaLimit = 0.25 * Math.PI;
-  camera.upperBetaLimit = 0.6 * Math.PI;
-
-  const distanceToTarget = targetVector.subtract(camera.position).length();
-  camera.lowerRadiusLimit = distanceToTarget;
-  camera.upperRadiusLimit = distanceToTarget;
-  camera.fov = 1.4;
-  camera.panningSensibility = 0; // disable right mouse button drag / 2 finger move to move camera position
 
   // volumetric light
   const sunMesh = BABYLON.Mesh.CreatePlane("sunMesh", 2, scene);
