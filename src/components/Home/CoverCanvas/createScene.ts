@@ -9,7 +9,7 @@ import initCameras from "./cameras";
 const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasElement) {
   const scene = new BABYLON.Scene(engine);
   scene.actionManager = new BABYLON.ActionManager(scene);
-  showWorldAxis(1, scene);
+  // showWorldAxis(1, scene);
   scene.debugLayer.show();
 
   await BABYLON.SceneLoader.AppendAsync(
@@ -82,42 +82,41 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   });
 
   // cameras
-  const {activeCamera: camera} = initCameras(scene);
+  const allCameras = initCameras(scene);
 
   // animations
   initAnimations(scene);
 
 
   // volumetric light
-  const sunMesh = BABYLON.Mesh.CreatePlane("sunMesh", 2, scene);
+  const sunMesh = BABYLON.Mesh.CreatePlane("sunMesh", 3, scene);
   const sunMeshMaterial = new BABYLON.StandardMaterial('sunSourceMaterial', scene);
-  sunMeshMaterial.diffuseColor = BABYLON.Color3.FromHexString('#fbe9e7');
-  sunMeshMaterial.backFaceCulling = false;
+  sunMeshMaterial.emissiveColor = BABYLON.Color3.FromHexString('#fbe9e7');
   //@ts-ignore
   sunMeshMaterial.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
   sunMeshMaterial.diffuseTexture = new BABYLON.Texture("/assets/sun.png", scene);
   sunMeshMaterial.diffuseTexture.hasAlpha = true;
   sunMesh.material = sunMeshMaterial;
   sunMesh.position = new BABYLON.Vector3(-10, 0.5, 100);
-  const vls = new BABYLON.VolumetricLightScatteringPostProcess('godrays', 1, camera, sunMesh, 100, BABYLON.Texture.BILINEAR_SAMPLINGMODE, engine, false);
-  vls.useDiffuseColor = true;
-  vls.exposure = 0.8;
-  vls.samples = 4;
+  // const vls = new BABYLON.VolumetricLightScatteringPostProcess('godrays', 1, allCameras[0], sunMesh, 100, BABYLON.Texture.BILINEAR_SAMPLINGMODE, engine, false);
+  // vls.useDiffuseColor = true;
+  // vls.exposure = 0.8;
+  // vls.samples = 4;
 
   //render pipeline
   const pipeline = new BABYLON.DefaultRenderingPipeline(
     "defaultPipeline", // The name of the pipeline
     true, // Do you want the pipeline to use HDR texture?
     scene, // The scene instance
-    [camera] // The list of cameras to be attached to
+    allCameras // The list of cameras to be attached to
   );
   pipeline.imageProcessing.vignetteEnabled = true;
   pipeline.imageProcessing.vignetteColor = new BABYLON.Color4(0,0,0, 1);
   pipeline.imageProcessing.vignetteWeight = 10;
-  pipeline.samples = 1;
+  pipeline.samples = 4;
   // pipeline.fxaaEnabled = true;
   pipeline.bloomEnabled = true;
-  pipeline.bloomWeight = 0.5;
+  pipeline.bloomWeight = 0.1;
   pipeline.sharpenEnabled = true;
   pipeline.sharpen.edgeAmount = 0.2; // default 0.3
   pipeline.imageProcessing.contrast = 1; // default 1
