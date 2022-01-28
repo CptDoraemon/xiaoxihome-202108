@@ -54,7 +54,7 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   // shadowGenerator.addShadowCaster(sphere2.mesh);
 
   // low poly water
-  const water = BABYLON.MeshBuilder.CreateGround("water", {width: 20, height: 20, subdivisions: 32}, scene);
+  const water = BABYLON.MeshBuilder.CreateGround("water", {width: 50, height: 50, subdivisions: 128}, scene);
   water.position = new BABYLON.Vector3(0, -0.3, 0);
   // water.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI * 0.5);
   lowPolyWaterShader();

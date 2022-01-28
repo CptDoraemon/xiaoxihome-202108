@@ -91,7 +91,7 @@ const getMainCamera = (scene: BABYLON.Scene) => {
 }
 
 const getCnTowerCamera = (scene: BABYLON.Scene) => {
-  const importedCameraTarget = scene.getMeshByName('restaurant');
+  const importedCameraTarget = scene.getMeshByName('cnTower.center.restaurant');
   const targetVector = importedCameraTarget?.position || new BABYLON.Vector3(0, 0, 0);
   const radius = 2;
   const beta = 0.35 * Math.PI;
