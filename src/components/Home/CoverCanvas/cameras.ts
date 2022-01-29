@@ -1,8 +1,7 @@
 import * as BABYLON from 'babylonjs';
-import * as GUI from 'babylonjs-gui';
 
 const initCameras = (scene: BABYLON.Scene) => {
-  let activeCameraIndex = 0;
+  let activeCameraIndex = -1;
 
   const importedCamera = scene.getCameraByName("Camera");
   importedCamera?.dispose();
@@ -12,10 +11,14 @@ const initCameras = (scene: BABYLON.Scene) => {
   const airShipCamera = getAirShipCamera(scene);
 
   const allCameras = [mainCamera, cnTowerCamera, airShipCamera];
-  const switchCamera = (index: number) => {
-    scene.switchActiveCamera(allCameras[index], false);
-  };
-  switchCamera(0);
+  const switchCamera = () => {
+    activeCameraIndex++;
+    if (activeCameraIndex === allCameras.length) {
+      activeCameraIndex = 0;
+    }
+    scene.switchActiveCamera(allCameras[activeCameraIndex], false);
+  }
+  switchCamera();
 
   // update airShipCamera before render
   const airShipCameraTarget = scene.getMeshByName('n');
@@ -30,38 +33,10 @@ const initCameras = (scene: BABYLON.Scene) => {
     airShipCamera.target = airShipCameraTarget.position;
   });
 
-  // button to switch camera
-  const advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-
-  const button = GUI.Button.CreateSimpleButton("switchCameraButton", "Switch Camera");
-  button.width = "150px";
-  button.height = "40px";
-  button.color = "#fff";
-  button.background = "rgb(6,13,32)";
-  button.thickness = 0;
-
-  const container = new GUI.Rectangle();
-  container.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-  container.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-  container.adaptWidthToChildren = true;
-  container.adaptHeightToChildren = true;
-  container.paddingRight = 16;
-  container.paddingBottom = 16;
-  container.thickness = 0;
-
-  container.addControl(button);
-  advancedTexture.addControl(container);
-
-  // add listener to button
-  button.onPointerClickObservable.add(() => {
-    activeCameraIndex++;
-    if (activeCameraIndex === allCameras.length) {
-      activeCameraIndex = 0;
-    }
-    switchCamera(activeCameraIndex);
-  })
-
-  return allCameras
+  return {
+    allCameras,
+    switchCamera
+  }
 }
 
 const getMainCamera = (scene: BABYLON.Scene) => {

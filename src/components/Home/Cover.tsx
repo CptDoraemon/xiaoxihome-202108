@@ -1,12 +1,9 @@
 import React from "react";
 import {Button, IconButton, Link, makeStyles, Paper, Typography} from "@material-ui/core";
 import GitHubIcon from "@material-ui/icons/GitHub";
-import clsx from "clsx";
-import SlideUpText from "./SlideUpText";
 import {MOBILE} from "../../theme";
-import useGetFullscreenHeight from "../../utils/useGetFullscreenHeight";
-import {ARROW_HEIGHT} from "./SectionTitle";
 import CoverCanvas from "./CoverCanvas/CoverCanvas";
+import CoverSize from "./CoverSize";
 
 interface CoverProps {}
 
@@ -18,18 +15,6 @@ const useStyles = makeStyles((theme) => {
   };
 
   return {
-    root: {
-      width: '100%',
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: theme.spacing(4),
-      [MOBILE(theme)]: {
-        padding: theme.spacing(2, 0),
-      }
-    },
     paper: {
       width: '100%',
       height: '100%',
@@ -147,10 +132,9 @@ const useStyles = makeStyles((theme) => {
 
 const Cover = () => {
   const classes = useStyles();
-  const vh = useGetFullscreenHeight();
 
   return (
-    <div className={classes.root} style={{height: vh - ARROW_HEIGHT * 0.5}}>
+    <CoverSize>
       <Paper className={classes.paper}>
         <div className={classes.topRow}>
           <IconButton className={classes.linkButton} component={Link} href={'https://github.com/CptDoraemon'} target={'_blank'} rel={'noreferrer noopenner'} edge={'start'}>
@@ -195,7 +179,7 @@ const Cover = () => {
           <CoverCanvas/>
         </div>
       </Paper>
-    </div>
+    </CoverSize>
   )
 };
 

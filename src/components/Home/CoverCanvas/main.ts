@@ -4,7 +4,7 @@ import createScene from "./createScene";
 const main = async (canvasId: string) => {
   const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
   const engine = new BABYLON.Engine(canvas, true);
-  const scene = await createScene(engine, canvas); //Call the createScene function
+  const {scene, callbacks} = await createScene(engine, canvas); //Call the createScene function
 
   // Register a render loop to repeatedly render the scene
   engine.runRenderLoop(function () {
@@ -15,6 +15,8 @@ const main = async (canvasId: string) => {
   window.addEventListener("resize", function () {
     engine.resize();
   });
+
+  return callbacks
 }
 
 export default main

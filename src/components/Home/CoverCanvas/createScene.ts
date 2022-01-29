@@ -9,9 +9,9 @@ import initEnvironment from "./environment";
 
 const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasElement) {
   const scene = new BABYLON.Scene(engine);
-  scene.actionManager = new BABYLON.ActionManager(scene);
+  // scene.actionManager = new BABYLON.ActionManager(scene);
   // showWorldAxis(1, scene);
-  scene.debugLayer.show();
+  // scene.debugLayer.show();
 
   await BABYLON.SceneLoader.AppendAsync(
     "/assets/imported/",
@@ -50,7 +50,10 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   });
 
   // cameras
-  const allCameras = initCameras(scene);
+  const {
+    allCameras,
+    switchCamera
+  } = initCameras(scene);
 
   // animations
   initAnimations(scene);
@@ -78,8 +81,8 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
     allCameras // The list of cameras to be attached to
   );
   pipeline.imageProcessing.vignetteEnabled = true;
-  pipeline.imageProcessing.vignetteColor = new BABYLON.Color4(0,0,0, 1);
-  pipeline.imageProcessing.vignetteWeight = 10;
+  pipeline.imageProcessing.vignetteColor = new BABYLON.Color4(0,0,0, 0.6);
+  pipeline.imageProcessing.vignetteWeight = 5;
   pipeline.samples = 4;
   // pipeline.fxaaEnabled = true;
   pipeline.bloomEnabled = true;
@@ -89,7 +92,12 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   pipeline.imageProcessing.contrast = 1; // default 1
   pipeline.imageProcessing.exposure = 1; // default 1
 
-  return scene;
+  return {
+    scene,
+    callbacks: {
+      switchCamera
+    }
+  };
 };
 
 export default createScene
