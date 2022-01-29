@@ -19,8 +19,7 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
     scene
   );
 
-  initEnvironment(scene);
-
+  await initEnvironment(scene);
 
   // low poly water
   const water = BABYLON.MeshBuilder.CreateGround("water", {width: 50, height: 50, subdivisions: 128}, scene);
