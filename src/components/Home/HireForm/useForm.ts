@@ -28,7 +28,6 @@ const useForm = () => {
       [name, email, message].forEach(obj => obj.resetError());
       requestState.resetError();
       requestState.setIsLoading(true);
-      await new Promise(r => setTimeout(r));
 
       const validationResult = schema.validate({
         name: name.value,
