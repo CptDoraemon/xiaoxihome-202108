@@ -27,7 +27,7 @@ const initEnvironment = async (scene: BABYLON.Scene) => {
 
   const starLimit = 5000;
   const starScale = 0.5;
-  const radius = 200
+  const radius = 150
   const showAsterisms = true;
   const asterismColor = new BABYLON.Color3(0, 0, 0.7);
   const twinkleStars = true;

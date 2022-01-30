@@ -59,7 +59,7 @@ const getMainCamera = (scene: BABYLON.Scene) => {
   const distanceToTarget = targetVector.subtract(camera.position).length();
   camera.lowerRadiusLimit = distanceToTarget;
   camera.upperRadiusLimit = distanceToTarget;
-  camera.fov = 1.4;
+  camera.fov = 1.15;
   camera.panningSensibility = 0; // disable right mouse button drag / 2 finger move to move camera position
 
   return camera

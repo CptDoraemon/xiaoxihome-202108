@@ -23,6 +23,11 @@ class CelestialSphere extends BABYLON.TransformNode {
 
   private _twinkleStars: boolean = true;
 
+  private declinationCutoff = 0.1; // only show the stars above this angle
+  private declinationMax = 1.2; // 1.56 calculated from starData, but won't see if too high
+  private declinationMin = -1.55; // calculated from starData
+  private opacityUvs: number[][] = [];
+
   constructor(name: string, scene: BABYLON.Scene, starData: StarData, radius: number, starLimit: number, starScale: number, showAsterisms: boolean, asterismColor: BABYLON.Color3, twinkleStars: boolean) {
 
     super(name, scene);
@@ -44,13 +49,47 @@ class CelestialSphere extends BABYLON.TransformNode {
     let positions = [];
     let indices = [];
     let colors = [];
-    let uvs = [];
+    let uvs: number[] = [];
     let uvs2 = [];
 
     let vertexIndex = 0;
-    let numberOfStars = Math.min(starData.rightAscension.length, this._starLimit);
+
+    // filter stars
+    const filteredStarData: StarData = {
+      rightAscension: [],
+      declination: [],
+      apparentMagnitude: [],
+      colorIndexBV: [],
+      color: [],
+      asterismIndices: []
+    };
+    this._starData.declination.forEach((dec, i) => {
+      if (dec > this.declinationCutoff) {
+        filteredStarData.rightAscension.push(this._starData.rightAscension[i]);
+        filteredStarData.declination.push(dec);
+        filteredStarData.apparentMagnitude.push(this._starData.apparentMagnitude[i]);
+        filteredStarData.colorIndexBV.push(this._starData.colorIndexBV[i]);
+      }
+    });
+    filteredStarData.color = this._starData.color;
+    filteredStarData.asterismIndices = this._starData.asterismIndices;
+    this._starData = filteredStarData;
+
+    // init opacity UVs
+    const base = [0.5, 1.0, 0.0, 0.0, 1.0, 0.0];
+    const grid = 0.33;
+    for (let col=2; col>=0; col--) {
+      for (let row = 0; row < 3; row++) {
+        this.opacityUvs.push(base.map((num, i) => {
+          return i % 2 === 0 ?
+            grid * (row + num) : //u
+            grid * (col + num);  //v
+        }))
+      }
+    }
 
     // Populate vertex data arrays for each star.
+    const numberOfStars = Math.min(this._starData.rightAscension.length, this._starLimit);
     for (let starIndex = 0; starIndex < numberOfStars; starIndex++) {
 
       // Star celestial coordinates.
@@ -87,7 +126,13 @@ class CelestialSphere extends BABYLON.TransformNode {
       );
 
       // Add star texture UV coordinates.
-      uvs.push(0.5, 1.0, 0.0, 0.0, 1.0, 0.0);
+      // used by opacity texture
+      const clampedDec = Math.min(dec, this.declinationMax);
+      const opacityAtThisDec1 = Math.floor(
+        ((clampedDec - this.declinationCutoff) / ((this.declinationMax + 0.01) - this.declinationCutoff)) * 10
+      ); // 0-9
+      const opacityAtThisDec2 = Math.floor(opacityAtThisDec1 * 0.9) // 0-8;
+      this.opacityUvs[opacityAtThisDec2].forEach(num => uvs.push(num));
 
       // Add 'twinkle' (noise) texture UV coordinates.
       let u = Math.random();
@@ -110,14 +155,13 @@ class CelestialSphere extends BABYLON.TransformNode {
 
     // Create & assign star material.
     let starMaterial = new BABYLON.StandardMaterial('starMaterial', scene);
-    let opacityTexture = new BABYLON.Texture('/assets/star/star.png', scene);
+    let opacityTexture = new BABYLON.Texture('/assets/star/starWithLevel.png', scene);
     starMaterial.opacityTexture = opacityTexture;
     starMaterial.disableLighting = true;
     starMesh.material = starMaterial;
 
     // Twinkle stars (simulate atmospheric turbulence).
     if (this._twinkleStars) {
-
       let emissiveTexture = new BABYLON.Texture('/assets/star/noise.png', scene);
       starMaterial.emissiveTexture = emissiveTexture;
       emissiveTexture.coordinatesIndex = 1; // uvs2
