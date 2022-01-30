@@ -1,8 +1,10 @@
 import React, {useRef, useState} from "react";
-import {alpha, Button, IconButton, lighten, makeStyles, Typography} from "@material-ui/core";
+import {alpha, Button, lighten, makeStyles, Typography} from "@material-ui/core";
 import {useMount} from "react-use";
 import main from "./main";
 import FlipCameraIosIcon from '@material-ui/icons/FlipCameraIos';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import GitHubIcon from '@material-ui/icons/GitHub';
 import {MOBILE} from "../../../theme";
 
 const PANEL_COLOR = '#90caf9';
@@ -35,26 +37,46 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 3,
   },
   controlPanel: {
-    padding: theme.spacing(2, 4),
+    maxWidth: 230,
+    width: '100%',
+    padding: theme.spacing(2, 2),
+    margin: theme.spacing(1, 0),
     backgroundColor: alpha(PANEL_COLOR, 0.08),
-    transform: 'rotate3d(0, -1, 0, 5deg)',
+    transform: 'rotate3d(0, -1, 0, 3deg)',
     transformOrigin: 'center center',
     borderRadius: 8,
     filter: `drop-shadow(0px 0px 16px ${lighten(PANEL_COLOR, 0.5)})`,
     border: `solid 2px ${alpha(PANEL_COLOR, 0.14)}`,
+    color: lighten(PANEL_COLOR, 0.5),
+    fontWeight: 700,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
     [MOBILE(theme)]: {
+      maxWidth: 160,
       padding: theme.spacing(0.25, 0.5),
     }
   },
+  textWrapper: {
+    padding: theme.spacing(0, 1),
+    fontWeight: 'inherit',
+    textAlign: 'end',
+    [MOBILE(theme)]: {
+      padding: theme.spacing(0.5, 0.5),
+    }
+  },
   cameraButton: {
-    color: lighten(PANEL_COLOR, 0.5),
+    color: 'inherit',
+    fontWeight: 'inherit',
     '&:hover': {
       background: 'transparent'
     },
     '& span': {
       color: 'inherit',
-      fontWeight: 700,
-      fontSize: '0.8rem'
+      fontWeight: 'inherit',
+      fontSize: '0.8rem',
+      textTransform: 'none'
     }
   }
 }));
@@ -81,6 +103,30 @@ const CoverCanvas = () => {
         {
           babylonReady &&
           <div className={classes.controlPanelTransformRoot}>
+            <div className={classes.controlPanel}>
+              <Typography variant={'body2'} className={classes.textWrapper}>
+                Hello there, this is Xiaoxi. You found my home, please scroll down to read more.
+              </Typography>
+            </div>
+
+            <div className={classes.controlPanel}>
+              <Button
+                endIcon={<GitHubIcon/>}
+                className={classes.cameraButton}
+                onClick={babylonCallbacksRef.current?.switchCamera}
+              >
+                GitHub
+              </Button>
+
+              <Button
+                endIcon={<LibraryBooksIcon/>}
+                className={classes.cameraButton}
+                onClick={babylonCallbacksRef.current?.switchCamera}
+              >
+                Blog
+              </Button>
+            </div>
+
             <div className={classes.controlPanel}>
               <Button
                 endIcon={<FlipCameraIosIcon/>}
