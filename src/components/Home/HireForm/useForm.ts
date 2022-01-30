@@ -2,6 +2,7 @@ import Joi from 'joi';
 import useInputFieldState from "../../../utils/useInputFieldState";
 import useRequestState from "../../../utils/useRequestState";
 import React, {useCallback} from "react";
+import axios from "axios";
 
 const schema = Joi.object({
   name: Joi.string()
@@ -27,7 +28,6 @@ const useForm = () => {
       [name, email, message].forEach(obj => obj.resetError());
       requestState.resetError();
       requestState.setIsLoading(true);
-      await new Promise(r => setTimeout(r));
 
       const validationResult = schema.validate({
         name: name.value,
@@ -52,10 +52,18 @@ const useForm = () => {
         return
       }
 
-      await new Promise(r => setTimeout(r, 2000));
-      requestState.setData(`Thank you, I'll get back to you shortly.`);
+      const res = await axios.post('https://api.xiaoxihome.com/api/xiaoxihome/feedback', {
+        name: name.value,
+        email: email.value,
+        message: message.value
+      })
+      if (res.data.status === 'ok') {
+        requestState.setData(`Thank you! I'll get back to you shortly.`);
+      } else {
+        requestState.setErrorMessage(res.data.message);
+      }
     } catch (e) {
-
+      requestState.setGenericErrorMessage();
     } finally {
       requestState.setIsLoading(false)
     }
