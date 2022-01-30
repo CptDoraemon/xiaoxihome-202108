@@ -1,6 +1,6 @@
-import React, {useRef, useState} from "react";
-import {alpha, Button, lighten, makeStyles, Typography} from "@material-ui/core";
-import {useMount} from "react-use";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {alpha, Button, Collapse, lighten, makeStyles, Typography} from "@material-ui/core";
+import {useMount, usePrevious, useUnmount} from "react-use";
 import main from "./main";
 import FlipCameraIosIcon from '@material-ui/icons/FlipCameraIos';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
       height: '100%',
       outline: 'none',
       zIndex: 1
-    }
+    },
   },
   touchLayer: {
     position: 'absolute',
@@ -30,20 +30,22 @@ const useStyles = makeStyles((theme) => ({
     height: '100%'
   },
   controlPanelTransformRoot: {
-    perspective: 100,
     right: theme.spacing(2),
     bottom: theme.spacing(2),
     position: 'absolute',
     zIndex: 3,
+    perspective: 100,
   },
   controlPanel: {
+    transform: 'rotate3d(0, -1, 0, 4deg)',
+    transformOrigin: '100% 100%',
+  },
+  controlPanelItem: {
     maxWidth: 230,
     width: '100%',
     padding: theme.spacing(2, 2),
-    margin: theme.spacing(1, 0),
+    margin: theme.spacing(0.5, 0),
     backgroundColor: alpha(PANEL_COLOR, 0.08),
-    transform: 'rotate3d(0, -1, 0, 3deg)',
-    transformOrigin: 'center center',
     borderRadius: 8,
     filter: `drop-shadow(0px 0px 16px ${lighten(PANEL_COLOR, 0.5)})`,
     border: `solid 2px ${alpha(PANEL_COLOR, 0.14)}`,
@@ -89,11 +91,34 @@ const CoverCanvas = () => {
   const id = 'cover-canvas';
   const babylonCallbacksRef = useRef<Awaited<ReturnType<typeof main>>>();
   const [babylonReady, setBabylonReady] = useState(false);
+  const [collapseIn, setCollapseIn] = useState(-1);
+  const timeoutRef = useRef<number | null>(null);
+
+  const registerCollapseIn = useCallback(() => {
+    timeoutRef.current = window.setTimeout(() => {
+      setCollapseIn(prev => prev === 2 ? 2 : prev + 1);
+      timeoutRef.current = null;
+    }, 2000)
+  }, []);
 
   useMount(async () => {
     babylonCallbacksRef.current = await main(id);
     setBabylonReady(true);
+    registerCollapseIn()
   });
+
+  const previousCollapseIn = usePrevious(collapseIn);
+  useEffect(() => {
+    if (previousCollapseIn !== undefined && previousCollapseIn !== collapseIn) {
+      registerCollapseIn()
+    }
+  }, [collapseIn, previousCollapseIn, registerCollapseIn]);
+
+  useUnmount(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+  })
 
   return (
     <div className={classes.root}>
@@ -104,37 +129,45 @@ const CoverCanvas = () => {
           babylonReady &&
           <div className={classes.controlPanelTransformRoot}>
             <div className={classes.controlPanel}>
-              <Typography variant={'body2'} className={classes.textWrapper}>
-                Hello there, this is Xiaoxi. You found my home, please scroll down to read more.
-              </Typography>
-            </div>
+              <Collapse in={collapseIn >= 0}>
+                <div className={classes.controlPanelItem}>
+                  <Typography variant={'body2'} className={classes.textWrapper}>
+                    Hello there, this is Xiaoxi. You found my home, please scroll down to read more.
+                  </Typography>
+                </div>
+              </Collapse>
 
-            <div className={classes.controlPanel}>
-              <Button
-                endIcon={<GitHubIcon/>}
-                className={classes.cameraButton}
-                onClick={babylonCallbacksRef.current?.switchCamera}
-              >
-                GitHub
-              </Button>
+              <Collapse in={collapseIn >= 1}>
+                <div className={classes.controlPanelItem}>
+                  <Button
+                    endIcon={<GitHubIcon/>}
+                    className={classes.cameraButton}
+                    onClick={babylonCallbacksRef.current?.switchCamera}
+                  >
+                    GitHub
+                  </Button>
 
-              <Button
-                endIcon={<LibraryBooksIcon/>}
-                className={classes.cameraButton}
-                onClick={babylonCallbacksRef.current?.switchCamera}
-              >
-                Blog
-              </Button>
-            </div>
+                  <Button
+                    endIcon={<LibraryBooksIcon/>}
+                    className={classes.cameraButton}
+                    onClick={babylonCallbacksRef.current?.switchCamera}
+                  >
+                    Blog
+                  </Button>
+                </div>
+              </Collapse>
 
-            <div className={classes.controlPanel}>
-              <Button
-                endIcon={<FlipCameraIosIcon/>}
-                className={classes.cameraButton}
-                onClick={babylonCallbacksRef.current?.switchCamera}
-              >
-                Switch Camera
-              </Button>
+              <Collapse in={collapseIn >= 2}>
+                <div className={classes.controlPanelItem}>
+                  <Button
+                    endIcon={<FlipCameraIosIcon/>}
+                    className={classes.cameraButton}
+                    onClick={babylonCallbacksRef.current?.switchCamera}
+                  >
+                    Switch Camera
+                  </Button>
+                </div>
+              </Collapse>
             </div>
           </div>
         }
