@@ -34,7 +34,13 @@ const TimelineRow = ({previousItemYear, isLast, data}: TimelineRowProps) => {
   return (
     <>
       <TopRow dotSize={isFirstItemInYear ? 'lg' : 'sm'} title={data.title} year={isFirstItemInYear ? data.year.toString() : undefined}/>
-      <ContentRow description={data.description} src={data.images[0]} onImageClick={toggleGallery}/>
+      <ContentRow
+        description={data.description}
+        src={data.images[0]}
+        onImageClick={toggleGallery}
+        githubLink={data.githubLink}
+        demoLink={data.demoLink}
+      />
 
       <DynamicGallery data={data.images} openCounter={galleryOpenCounter}/>
     </>

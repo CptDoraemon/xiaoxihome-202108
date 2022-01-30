@@ -1,10 +1,11 @@
-import React, {useState} from "react";
-import {Button, makeStyles, Typography} from "@material-ui/core";
+import React from "react";
+import {Button, makeStyles, Typography, Link as MuiLink} from "@material-ui/core";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import {getArrowWidth, getDotWidth, getYearWidth} from "./TopRow";
 import {MOBILE} from "../../../theme";
 import ImageWrapper from "../ImageWrapper";
+import Link from 'next/link'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,6 +46,14 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(4),
     [MOBILE(theme)]: {
       paddingRight: theme.spacing(2),
+    },
+    '& ul': {
+      margin: 0,
+      padding: 0
+    },
+    '& li': {
+      margin: theme.spacing(1, 0),
+      padding: 0
     }
   },
   linkButtonsGroup: {
@@ -53,47 +62,70 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   linkButton: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.text.secondary,
-    color: theme.palette.primary.main
+    color: theme.palette.primary.main,
+    textDecoration: 'none',
+    '&:hover': {
+      textDecoration: 'none',
+    }
   },
 }));
 
 interface ContentRowProps {
-  description: string,
+  description: string | JSX.Element,
   src: StaticImageData,
-  onImageClick: () => void
+  onImageClick: () => void,
+  githubLink?: string,
+  demoLink?: string
 }
 
-const ContentRow = ({description, src, onImageClick}: ContentRowProps) => {
+const ContentRow = ({description, src, onImageClick, githubLink, demoLink}: ContentRowProps) => {
   const classes = useStyles();
-  const [loaded, setLoaded] = useState(false);
 
   return (
     <div className={classes.root}>
       <div className={classes.left}>
         <div className={classes.linkButtonsGroup}>
-          <Button
-            variant="contained"
-            disableElevation
-            className={classes.linkButton}
-            startIcon={<GitHubIcon />}
-            size={'small'}
-          >
-            Code
-          </Button>
-          <Button
-            variant="contained"
-            disableElevation
-            className={classes.linkButton}
-            startIcon={<OpenInNewIcon />}
-            size={'small'}
-          >
-            Demo
-          </Button>
+          {
+            githubLink &&
+            <Link href={githubLink} passHref>
+              {/* @ts-ignore */}
+              <Button
+                variant="contained"
+                disableElevation
+                className={classes.linkButton}
+                startIcon={<GitHubIcon/>}
+                size={'small'}
+                component={MuiLink}
+                target={'_blank'}
+                rel={'noopener'}
+              >
+                GitHub
+              </Button>
+            </Link>
+          }
+          {
+            demoLink &&
+            <Link href={demoLink} passHref>
+              {/* @ts-ignore */}
+              <Button
+                variant="contained"
+                disableElevation
+                className={classes.linkButton}
+                startIcon={<OpenInNewIcon />}
+                size={'small'}
+                component={MuiLink}
+                target={'_blank'}
+                rel={'noopener'}
+              >
+                Demo
+              </Button>
+            </Link>
+          }
         </div>
         <Typography component='p' variant='h6' className={classes.description}>
           {description}
