@@ -23,10 +23,10 @@ const useStyles = makeStyles((theme) => ({
   innerWrapper: {
     width: '100%',
     position: 'relative',
-    filter: 'brightness(0.8)',
+    filter: 'brightness(0.9)',
     cursor: 'pointer',
     '&:hover, &:focus': {
-      filter: 'brightness(1.1)',
+      filter: 'brightness(1)',
     },
   },
   bg: {

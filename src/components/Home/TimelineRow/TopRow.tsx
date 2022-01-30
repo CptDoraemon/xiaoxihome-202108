@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     position: 'relative',
     backgroundColor: theme.palette.secondary.main,
-    padding: theme.spacing(1, 4),
+    padding: theme.spacing(1, 2),
     // maxWidth: '100%',
     textTransform: 'capitalize',
     '&:before, &:after': {

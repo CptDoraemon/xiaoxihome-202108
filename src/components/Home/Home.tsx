@@ -33,6 +33,7 @@ const Home = () => {
       <div className={classes.widthWrapper}>
         <Cover/>
 
+        <div id={'timeline'}> </div>
         <SectionTitle title={'My experience in'} subTitle={'Web development'} />
         <Timeline/>
 
