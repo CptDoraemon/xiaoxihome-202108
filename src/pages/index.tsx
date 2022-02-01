@@ -7,6 +7,10 @@ const Index = () => {
     <>
       <Head>
         <title>XiaoxiHome</title>
+        <meta
+          name={"description"}
+          content={"Xiaoxi Yu (Jake), is a Fullstack JavaScript Developer. This is his homepage."}
+        />
       </Head>
       <Home/>
     </>
