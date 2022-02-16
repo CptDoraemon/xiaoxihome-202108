@@ -1,12 +1,12 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {alpha, Button, Collapse, lighten, makeStyles, Typography, Link as MuiLink} from "@material-ui/core";
 import {useMount, usePrevious, useUnmount} from "react-use";
-import main from "./main";
 import FlipCameraIosIcon from '@material-ui/icons/FlipCameraIos';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import {MOBILE} from "../../../theme";
 import Link from 'next/link'
+import useBabylon from "./useBabylon";
 
 const PANEL_COLOR = '#90caf9';
 const PANEL_SECONDARY_COLOR = '#ef9a9a';
@@ -100,12 +100,10 @@ const useStyles = makeStyles((theme) => ({
 
 interface CoverCanvasProps {}
 
-type Awaited<T> = T extends PromiseLike<infer U> ? U : T
 const CoverCanvas = () => {
   const classes = useStyles();
   const id = 'cover-canvas';
-  const babylonCallbacksRef = useRef<Awaited<ReturnType<typeof main>>>();
-  const [babylonReady, setBabylonReady] = useState(false);
+  const {callbacks, babylonReady} = useBabylon(id);
   const [collapseIn, setCollapseIn] = useState(-1);
   const timeoutRef = useRef<number | null>(null);
 
@@ -116,11 +114,12 @@ const CoverCanvas = () => {
     }, 2000)
   }, []);
 
-  useMount(async () => {
-    babylonCallbacksRef.current = await main(id);
-    setBabylonReady(true);
-    registerCollapseIn()
-  });
+  const previousIsBabylonReady = usePrevious(babylonReady);
+  useEffect(() => {
+    if (!previousIsBabylonReady && babylonReady) {
+      registerCollapseIn()
+    }
+  }, [babylonReady, previousIsBabylonReady, registerCollapseIn])
 
   const previousCollapseIn = usePrevious(collapseIn);
   useEffect(() => {
@@ -189,7 +188,7 @@ const CoverCanvas = () => {
                   <Button
                     endIcon={<FlipCameraIosIcon/>}
                     className={classes.cameraButton}
-                    onClick={babylonCallbacksRef.current?.switchCamera}
+                    onClick={callbacks?.switchCamera}
                   >
                     Switch Camera
                   </Button>
