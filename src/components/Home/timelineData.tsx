@@ -1,6 +1,7 @@
 import thisImage from "../../assets/this.jpg";
 
 import cmHome from "../../assets/cryptomibs-home.jpg";
+import cmLanding from "../../assets/cryptomibs-landing-2206.jpg";
 import cmMibBusterLobby from "../../assets/cryptomibs-mibbuster-lobby.jpg";
 import cmMibBusterInGame from "../../assets/cryptomibs-mibbuster-ingame.jpg";
 import cmStore from "../../assets/cryptomibs-store.jpg";
@@ -40,7 +41,7 @@ const timelineData: TimelineDataItem[] = [
         <li>Develop Node.js apps to automate routine workflows</li>
         <li>Manage AWS ECS stacks</li>
       </ul>,
-    images: [cmHome, cmStore, cmTrade, cmMibBusterLobby, cmMibBusterInGame],
+    images: [cmHome, cmLanding, cmStore, cmTrade, cmMibBusterLobby, cmMibBusterInGame],
     demoLink: 'https://www.cryptomibs.io/'
   },
   {
