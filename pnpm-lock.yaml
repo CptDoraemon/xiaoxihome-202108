@@ -4,6 +4,7 @@ specifiers:
   '@material-ui/core': ^4.12.3
   '@material-ui/icons': ^4.11.2
   '@material-ui/lab': ^4.0.0-alpha.60
+  '@material-ui/styles': ^4.11.5
   '@types/react': 17.0.15
   axios: ^0.25.0
   babylonjs: ^4.2.1
@@ -24,6 +25,7 @@ dependencies:
   '@material-ui/core': 4.12.4_n3l27osc6bdsvf3qwoo2m2cel4
   '@material-ui/icons': 4.11.3_ytrrknyjdhai5vt3bo6lb2owz4
   '@material-ui/lab': 4.0.0-alpha.61_ytrrknyjdhai5vt3bo6lb2owz4
+  '@material-ui/styles': 4.11.5_n3l27osc6bdsvf3qwoo2m2cel4
   axios: 0.25.0
   babylonjs: 4.2.2
   babylonjs-gui: 4.2.2
