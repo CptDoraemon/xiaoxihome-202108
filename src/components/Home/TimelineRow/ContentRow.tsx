@@ -38,8 +38,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'center',
+    padding: theme.spacing(4, 0, 0, 0),
     [MOBILE(theme)]: {
       flex: '0 0 100%',
+      padding: theme.spacing(0),
     }
   },
   description: {
@@ -52,8 +54,9 @@ const useStyles = makeStyles((theme) => ({
       padding: 0
     },
     '& li': {
-      margin: theme.spacing(1, 0),
-      padding: 0
+      margin: theme.spacing(2.5, 0),
+      padding: 0,
+      lineHeight: 1.75
     }
   },
   linkButtonsGroup: {
@@ -127,7 +130,7 @@ const ContentRow = ({description, src, onImageClick, githubLink, demoLink}: Cont
             </Link>
           }
         </div>
-        <Typography component='p' variant='h6' className={classes.description}>
+        <Typography component='p' variant='body1' className={classes.description}>
           {description}
         </Typography>
       </div>

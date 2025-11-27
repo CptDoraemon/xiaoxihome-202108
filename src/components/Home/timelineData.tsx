@@ -1,5 +1,14 @@
 import thisImage from "../../assets/this.jpg";
 
+import b2b1 from "../../assets/b2b-1.webp";
+import b2b2 from "../../assets/b2b-2.webp";
+import b2b3 from "../../assets/b2b-3.webp";
+import b2b4 from "../../assets/b2b-4.webp";
+import b2b5 from "../../assets/b2b-5.webp";
+import b2b6 from "../../assets/b2b-6.webp";
+import b2b7 from "../../assets/b2b-7.webp";
+import b2b8 from "../../assets/b2b-8.webp";
+
 import cmHome from "../../assets/cryptomibs-home.jpg";
 import cmLanding from "../../assets/cryptomibs-landing-2206.jpg";
 import cmMibBusterLobby from "../../assets/cryptomibs-mibbuster-lobby.jpg";
@@ -30,16 +39,28 @@ export interface TimelineDataItem {
 
 const timelineData: TimelineDataItem[] = [
   {
-    year: 2022,
-    title: 'Software Developer @ Surge ERP Consulting',
+    year: 2023,
+    title: 'B2B ERP project for food catering | Software Developer @ Surge ERP Consulting',
     description:
       <ul>
-        <li>Lead the development of React app, improved overall accessibility, reduced loading time by 80%</li>
-        <li>Develop marketplaces for Ethereum NFTs, allowing users to interact with smart contracts</li>
-        <li>Develop a multiplayer game from end to end using WebSocket and Socket.io</li>
-        <li>Develop a Node.js service with AWS Lambda to dynamically composite and generate PNG/SVG images with user’s inputs</li>
-        <li>Develop Node.js apps to automate routine workflows</li>
-        <li>Manage AWS ECS stacks</li>
+        <li>Led the development of a B2B ERP platform enabling a food-catering client to manage resources and production planning more efficiently.</li>
+        <li>Designed workflows where users create ingredients and recipes, assemble them into menus, define production sites, and assign menu portions per site. The system automatically calculates daily ingredient requirements for the central kitchen and distribution amounts for each on-site food truck.</li>
+        <li>Developed reusable widgets on top of Material UI, allowing users to easily create or edit entities and modify fields such as text, datetime, booleans, and 1-N / N-N relationships.</li>
+        <li>Implemented algorithms to split wide or long tables into multiple printable, letter-sized PDF pages.</li>
+        <li>Built a role-based permission system that supports granular access levels for different user types.</li>
+      </ul>,
+    images: [b2b1, b2b2, b2b3, b2b4, b2b5, b2b6, b2b7, b2b8]
+  },
+  {
+    year: 2022,
+    title: 'Software Developer @ Surge ERP Consulting | CryptoMibs.io',
+    description:
+      <ul>
+        <li>Led development of the blockchain application website, improving accessibility and reducing bundle size, resulting in an 80% faster loading time.</li>
+        <li>Developed an Ethereum NFT marketplace with advanced combinable filters and two-way URL syncing for improved SEO and shareability.</li>
+        <li>Developed a multiplayer, chess-like WebSocket game featuring room creation/joining, in-app or NFT currency gameplay, real-time chat, and Redis distributed locks to prevent race conditions.</li>
+        <li>Created a Node.js AWS Lambda service to dynamically composite, generate, and optimize PNG and SVG images based on user input.</li>
+        <li>Managed cloud infrastructure across AWS services including EC2, ECS, ECR, VPC, CloudFront, API Gateway, Lambda, and S3.</li>
       </ul>,
     images: [cmHome, cmLanding, cmStore, cmTrade, cmMibBusterLobby, cmMibBusterInGame],
     demoLink: 'https://www.cryptomibs.io/'
@@ -48,11 +69,11 @@ const timelineData: TimelineDataItem[] = [
     year: 2022,
     title: 'Renovated XiaoxiHome',
     description:
-    <ul>
-      <li>Built portfolio website built with Next.js</li>
-      <li>Built a 3D scene into webpage with Babylon.js</li>
-      <li>Created 3D models and baked light textures with Blender</li>
-    </ul>,
+      <ul>
+        <li>Rebuilt my portfolio website using Next.js.</li>
+        <li>Created 3D models and baked lighting textures using Blender.</li>
+        <li>Built a 3D landing page with Babylon.js and wrote custom fragment and vertex shaders for efficient water rendering.</li>
+      </ul>,
     images: [thisImage],
     githubLink: 'https://github.com/CptDoraemon/xiaoxihome-202108'
   },
@@ -60,14 +81,14 @@ const timelineData: TimelineDataItem[] = [
     year: 2021,
     title: 'News App',
     description:
-    <ul>
-      <li>Developed a frontend app with React.js to display news articles</li>
-      <li>Developed a Node.js app to collect and clean news data recurrently, has been working reliably for years</li>
-      <li>Developed a service with RabbitMQ to synchronize data between MongoDB and Elasticsearch</li>
-      <li>Migrated analytics and search functionalities from MongoDB to Elaticsearch</li>
-      <li>Visualized data into various interactive charts and map with d3.js</li>
-      <li>Built CI/CD pipeline with Docker-Compose and GitHub Actions</li>
-    </ul>,
+      <ul>
+        <li>Developed a React.js frontend to display categorized and searchable news articles.</li>
+        <li>Created a Node.js service to collect and clean news data on a recurring schedule, running reliably for years.</li>
+        <li>Implemented a data synchronization service using RabbitMQ to keep MongoDB and Elasticsearch in sync.</li>
+        <li>Migrated analytics and full-text search features from MongoDB to Elasticsearch for improved performance.</li>
+        <li>Visualized datasets using interactive charts and maps built with d3.js.</li>
+        <li>Set up a CI/CD pipeline using Docker Compose and GitHub Actions.</li>
+      </ul>,
     images: [newsHome, newsMap, newsSearch, newsWordCloud],
     demoLink: 'https://cptdoraemon.github.io/news-app',
     githubLink: 'https://github.com/CptDoraemon/news-app'
@@ -77,8 +98,8 @@ const timelineData: TimelineDataItem[] = [
     title: 'Blog',
     description:
       <ul>
-        <li>Built a blog with Python, Django, Django Rest Framework, and PostgreSQL</li>
-        <li>Built Authentication module with JSON Web Token (JWT)</li>
+        <li>Built a blog platform using Python, Django, Django REST Framework, and PostgreSQL.</li>
+        <li>Implemented an authentication module using JSON Web Tokens (JWT).</li>
       </ul>,
     images: [blogHome, blogEditor],
     demoLink: 'https://cptdoraemon.github.io/discussion-board-client/',
@@ -88,11 +109,10 @@ const timelineData: TimelineDataItem[] = [
     year: 2019,
     title: 'The first XiaoxiHome',
     description:
-    <ul>
-      <li>Discontinued, please give time for demo server to wake</li>
-      <li>Built a split-flap effect cover page with canvas and CSS, custom algorithm to divide images into proper-sized tiles</li>
-      <li>Built snowfall animation on canvas, with computation offloaded to Web Worker to improve performance</li>
-    </ul>,
+      <ul>
+        <li>Built a landing page featuring a split-flap (mechanical departure board–style) animation using Canvas and CSS, including an algorithm that slices images into tiles based on screen size.</li>
+        <li>Created a snowfall animation on Canvas with computations offloaded to a Web Worker for better performance.</li>
+      </ul>,
     images: [xiaoxihomeHome, xiaoxihomeFlip, xiaoxihomeSnow],
     demoLink: 'https://xiaoxihome.herokuapp.com/'
   }
