@@ -6,6 +6,7 @@ import {getArrowWidth, getDotWidth, getYearWidth} from "./TopRow";
 import {MOBILE} from "../../../theme";
 import ImageWrapper from "../ImageWrapper";
 import Link from 'next/link'
+import {StaticImageData} from "next/image";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -95,42 +96,38 @@ const ContentRow = ({description, src, onImageClick, githubLink, demoLink}: Cont
         <div className={classes.linkButtonsGroup}>
           {
             githubLink &&
-            <Link href={githubLink} passHref>
-              {/* @ts-ignore */}
-              <Button
-                variant="contained"
-                disableElevation
-                className={classes.linkButton}
-                startIcon={<GitHubIcon/>}
-                size={'small'}
-                component={MuiLink}
-                target={'_blank'}
-                rel={'noopener'}
-              >
-                GitHub
-              </Button>
-            </Link>
+            <Button
+              variant="contained"
+              disableElevation
+              className={classes.linkButton}
+              startIcon={<GitHubIcon/>}
+              size={'small'}
+              component={Link}
+              target={'_blank'}
+              rel={'noopener'}
+              href={githubLink}
+            >
+              GitHub
+            </Button>
           }
           {
             demoLink &&
-            <Link href={demoLink} passHref>
-              {/* @ts-ignore */}
-              <Button
-                variant="contained"
-                disableElevation
-                className={classes.linkButton}
-                startIcon={<OpenInNewIcon />}
-                size={'small'}
-                component={MuiLink}
-                target={'_blank'}
-                rel={'noopener'}
-              >
-                Demo
-              </Button>
-            </Link>
+            <Button
+              variant="contained"
+              disableElevation
+              className={classes.linkButton}
+              startIcon={<OpenInNewIcon />}
+              size={'small'}
+              component={Link}
+              target={'_blank'}
+              rel={'noopener'}
+              href={demoLink}
+            >
+              Demo
+            </Button>
           }
         </div>
-        <Typography component='p' variant='body1' className={classes.description}>
+        <Typography component='div' variant='body1' className={classes.description}>
           {description}
         </Typography>
       </div>
