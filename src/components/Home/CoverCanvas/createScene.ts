@@ -1,11 +1,10 @@
 import * as BABYLON from 'babylonjs';
-import showWorldAxis from "./WorldAxis";
-import * as MATERIAL from 'babylonjs-materials';
-import initOceanShader from "./shaders/oceanShader";
-import lowPolyWaterShader from "./shaders/lowPolyWaterShader";
 import initAnimations from "./animations";
 import initCameras from "./cameras";
 import initEnvironment from "./environment";
+
+import waterVertexShader from './shaders/water.vertex.glsl';
+import waterFragmentShader from './shaders/water.fragment.glsl';
 
 const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasElement) {
   const scene = new BABYLON.Scene(engine);
@@ -20,34 +19,6 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   );
 
   await initEnvironment(scene);
-
-  // low poly water
-  const water = BABYLON.MeshBuilder.CreateGround("water", {width: 50, height: 50, subdivisions: 128}, scene);
-  water.position = new BABYLON.Vector3(0, -0.3, 0);
-  // water.rotate(new BABYLON.Vector3(1, 0, 0), Math.PI * 0.5);
-  lowPolyWaterShader();
-  const waterMat = new BABYLON.ShaderMaterial(
-    "waterMat",
-    scene,
-    {
-      vertex: "lowPolyWater",
-      fragment: "lowPolyWater",
-    },
-    {
-      attributes: ["position", "normal", "uv"],
-      uniforms: ["world", "worldView", "worldViewProjection", "view", "projection", "textureSampler", "color"],
-    },
-  );
-  waterMat.setColor3('myColor', BABYLON.Color3.FromHexString('#74ccf4'));
-  waterMat.setFloat('myStrength', 0.2);
-  water.material = waterMat;
-  // scene.forceWireframe = true;
-
-  let time = 0.;
-  scene.registerBeforeRender(function() {
-    waterMat.setFloat("time", time);
-    time += 1;
-  });
 
   // cameras
   const {
@@ -73,6 +44,9 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   // vls.exposure = 0.8;
   // vls.samples = 4;
 
+  // add water
+  const {shaderMaterial: waterMaterial} = addWater(scene, sunMesh.position)
+
   //render pipeline
   const pipeline = new BABYLON.DefaultRenderingPipeline(
     "defaultPipeline", // The name of the pipeline
@@ -85,12 +59,17 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
   pipeline.imageProcessing.vignetteWeight = 5;
   pipeline.samples = 4;
   // pipeline.fxaaEnabled = true;
-  pipeline.bloomEnabled = true;
-  pipeline.bloomWeight = 0.1;
+  // pipeline.bloomEnabled = true;
+  // pipeline.bloomWeight = 0.1;
   pipeline.sharpenEnabled = true;
   pipeline.sharpen.edgeAmount = 0.2; // default 0.3
   pipeline.imageProcessing.contrast = 1; // default 1
   pipeline.imageProcessing.exposure = 1; // default 1
+
+  scene.registerBeforeRender(() => {
+    const time = performance.now() * 0.0005;
+    waterMaterial.setFloat("time", time);
+  });
 
   return {
     scene,
@@ -99,5 +78,58 @@ const createScene = async function (engine: BABYLON.Engine, canvas: HTMLCanvasEl
     }
   };
 };
+
+function addWater(scene: BABYLON.Scene, moonPosition: BABYLON.Vector3) : {mesh: BABYLON.Mesh, shaderMaterial: BABYLON.ShaderMaterial} {
+  // add water plane
+  BABYLON.Effect.ShadersStore["waterVertexShader"] = waterVertexShader as string;
+  BABYLON.Effect.ShadersStore["waterFragmentShader"] = waterFragmentShader as string;
+
+  const waterMaterial = new BABYLON.ShaderMaterial(
+    "waterShader",
+    scene,
+    {
+      vertex: "water",
+      fragment: "water",
+    },
+    {
+      attributes: ["position", "normal", "uv"],
+      uniforms: ["world", "worldViewProjection", "time", "cameraPosition"]
+    }
+  );
+
+  const waterPlane = BABYLON.MeshBuilder.CreateGround(
+    "water",
+    { width: 100, height: 100, subdivisions: 120 },
+    scene
+  );
+  waterPlane.position.y = -0.3;
+
+  waterMaterial.setVector3("lightPosition", moonPosition);
+  waterMaterial.setVector3("lightColor", new BABYLON.Vector3(0.9, 0.95, 1.0));
+  waterMaterial.setVector3("waterColor", new BABYLON.Vector3(0.1, 0.5, 0.7));
+  waterMaterial.setVector3("deepWaterColor", new BABYLON.Vector3(0.0, 0.2, 0.4));
+  waterMaterial.setVector3("horizonColor", new BABYLON.Vector3(0.15, 0.2, 0.35));
+  waterMaterial.setVector3("moonPosition", moonPosition);
+  waterMaterial.setFloat("fogDensity", 0.012);
+  waterMaterial.setFloat("fogStart", 0.0);
+  waterMaterial.backFaceCulling = false;
+  waterMaterial.alpha = 0.85;
+  waterMaterial.alphaMode = BABYLON.Engine.ALPHA_COMBINE;
+  waterMaterial.needDepthPrePass = true;
+
+  waterMaterial.setFloat("waveHeightMultiplier", 0.3);      // Overall scale
+  waterMaterial.setFloat("largeWaveHeight", 0.25);          // Large swells
+  waterMaterial.setFloat("mediumWaveHeight", 0.15);         // Medium waves
+  waterMaterial.setFloat("smallWaveHeight", 0.08);          // Small choppy waves
+  waterMaterial.setFloat("noiseIntensity", 1.0);            // Fine detail
+  waterMaterial.setFloat("horizontalDisplacement", 0.01);    // Horizontal movement
+
+  waterPlane.material = waterMaterial;
+
+  return {
+    mesh: waterPlane,
+    shaderMaterial: waterMaterial
+  };
+}
 
 export default createScene
