@@ -90,11 +90,12 @@ const useStyles = makeStyles((theme) => ({
   secondaryText: {
     color: PANEL_SECONDARY_COLOR,
     textDecoration: 'none',
+    boxShadow: 'none',
     '&:hover, &:focus': {
       textDecoration: 'none',
       color: PANEL_COLOR,
       outline: 'none'
-    }
+    },
   }
 }));
 
@@ -147,9 +148,17 @@ const CoverCanvas = () => {
                 <div className={classes.controlPanelItem}>
                   <Typography variant={'body2'} className={classes.textWrapper}>
                     {'Hello there, this is Xiaoxi. You found my home, please '}
-                    <Link href={'/#timeline'} passHref>
-                      <MuiLink className={classes.secondaryText}>scroll down</MuiLink>
-                    </Link>
+                    <MuiLink
+                      className={classes.secondaryText}
+                      component={Link}
+                      href='/#timeline'
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.scrollTo({top: document.getElementById('timeline')?.offsetTop || 0, behavior: 'smooth'});
+                      }}
+                    >
+                      scroll down
+                    </MuiLink>
                     {' to read more.'}
                   </Typography>
                 </div>
@@ -157,29 +166,27 @@ const CoverCanvas = () => {
 
               <Collapse in={collapseIn >= 1}>
                 <div className={classes.controlPanelItem}>
-                  <Link href={'https://github.com/CptDoraemon'} passHref>
-                    <Button
-                      endIcon={<GitHubIcon/>}
-                      className={classes.cameraButton}
-                      component={MuiLink}
-                      target={'_blank'}
-                      rel={'noopener'}
-                    >
-                      GitHub
-                    </Button>
-                  </Link>
+                  <Button
+                    endIcon={<GitHubIcon/>}
+                    className={classes.cameraButton}
+                    component={Link}
+                    target={'_blank'}
+                    rel={'noopener'}
+                    href={'https://github.com/CptDoraemon'}
+                  >
+                    GitHub
+                  </Button>
 
-                  <Link href={'https://cptdoraemon.github.io/discussion-board-client/'} passHref>
-                    <Button
-                      endIcon={<LibraryBooksIcon/>}
-                      className={classes.cameraButton}
-                      component={MuiLink}
-                      target={'_blank'}
-                      rel={'noopener'}
-                    >
-                      Blog
-                    </Button>
-                  </Link>
+                  <Button
+                    endIcon={<LibraryBooksIcon/>}
+                    className={classes.cameraButton}
+                    component={Link}
+                    target={'_blank'}
+                    rel={'noopener'}
+                    href={'https://cptdoraemon.github.io/discussion-board-client/'}
+                  >
+                    Blog
+                  </Button>
                 </div>
               </Collapse>
 
