@@ -27,12 +27,14 @@ import blogEditor from "../../assets/blog-editor.jpg";
 import xiaoxihomeHome from "../../assets/xiaoxihome-home.jpg"
 import xiaoxihomeFlip from "../../assets/xiaoxihome-flip.jpg"
 import xiaoxihomeSnow from "../../assets/xiaoxihome-snow.jpg"
+import {JSX} from "react";
+import {StaticImageData} from "next/image";
 
 export interface TimelineDataItem {
   year: number,
   title: string,
-  description: string | JSX.Element,
-  images: Array<StaticImageData>,
+  description: JSX.Element,
+  images: StaticImageData[],
   githubLink?: string,
   demoLink?: string
 }
@@ -49,7 +51,7 @@ const timelineData: TimelineDataItem[] = [
         <li>Implemented algorithms to split wide or long tables into multiple printable, letter-sized PDF pages.</li>
         <li>Built a role-based permission system that supports granular access levels for different user types.</li>
       </ul>,
-    images: [b2b1, b2b2, b2b3, b2b4, b2b5, b2b6, b2b7, b2b8]
+    images: [b2b1, b2b2, b2b3, b2b4, b2b5, b2b6, b2b7, b2b8] as StaticImageData[]
   },
   {
     year: 2022,
@@ -62,7 +64,7 @@ const timelineData: TimelineDataItem[] = [
         <li>Created a Node.js AWS Lambda service to dynamically composite, generate, and optimize PNG and SVG images based on user input.</li>
         <li>Managed cloud infrastructure across AWS services including EC2, ECS, ECR, VPC, CloudFront, API Gateway, Lambda, and S3.</li>
       </ul>,
-    images: [cmHome, cmLanding, cmStore, cmTrade, cmMibBusterLobby, cmMibBusterInGame],
+    images: [cmHome, cmLanding, cmStore, cmTrade, cmMibBusterLobby, cmMibBusterInGame] as StaticImageData[],
     demoLink: 'https://www.cryptomibs.io/'
   },
   {
@@ -74,7 +76,7 @@ const timelineData: TimelineDataItem[] = [
         <li>Created 3D models and baked lighting textures using Blender.</li>
         <li>Built a 3D landing page with Babylon.js and wrote custom fragment and vertex shaders for efficient water rendering.</li>
       </ul>,
-    images: [thisImage],
+    images: [thisImage] as StaticImageData[],
     githubLink: 'https://github.com/CptDoraemon/xiaoxihome-202108'
   },
   {
@@ -89,7 +91,7 @@ const timelineData: TimelineDataItem[] = [
         <li>Visualized datasets using interactive charts and maps built with d3.js.</li>
         <li>Set up a CI/CD pipeline using Docker Compose and GitHub Actions.</li>
       </ul>,
-    images: [newsHome, newsMap, newsSearch, newsWordCloud],
+    images: [newsHome, newsMap, newsSearch, newsWordCloud] as StaticImageData[],
     demoLink: 'https://cptdoraemon.github.io/news-app',
     githubLink: 'https://github.com/CptDoraemon/news-app'
   },
@@ -101,7 +103,7 @@ const timelineData: TimelineDataItem[] = [
         <li>Built a blog platform using Python, Django, Django REST Framework, and PostgreSQL.</li>
         <li>Implemented an authentication module using JSON Web Tokens (JWT).</li>
       </ul>,
-    images: [blogHome, blogEditor],
+    images: [blogHome, blogEditor] as StaticImageData[],
     demoLink: 'https://cptdoraemon.github.io/discussion-board-client/',
     githubLink: 'https://github.com/CptDoraemon/discussion-board-client'
   },
@@ -113,7 +115,7 @@ const timelineData: TimelineDataItem[] = [
         <li>Built a landing page featuring a split-flap (mechanical departure board–style) animation using Canvas and CSS, including an algorithm that slices images into tiles based on screen size.</li>
         <li>Created a snowfall animation on Canvas with computations offloaded to a Web Worker for better performance.</li>
       </ul>,
-    images: [xiaoxihomeHome, xiaoxihomeFlip, xiaoxihomeSnow],
+    images: [xiaoxihomeHome, xiaoxihomeFlip, xiaoxihomeSnow] as StaticImageData[],
     demoLink: 'https://xiaoxihome.herokuapp.com/'
   }
 ];

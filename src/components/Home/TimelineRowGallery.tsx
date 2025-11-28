@@ -3,6 +3,7 @@ import useTimelineRowGallery from "./useTimelineRowGallery";
 import {usePrevious} from "react-use";
 import 'lightgallery/css/lightgallery.css';
 import 'lightgallery/css/lg-zoom.css';
+import {StaticImageData} from "next/image";
 
 interface TimelineRowGalleryProps {
   data: Array<StaticImageData>,

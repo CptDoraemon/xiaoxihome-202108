@@ -1,4 +1,4 @@
-import React from "react";
+import React, {JSX} from "react";
 import {Button, makeStyles, Typography, Link as MuiLink} from "@material-ui/core";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";

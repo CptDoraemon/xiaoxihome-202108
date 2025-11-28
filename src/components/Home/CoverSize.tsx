@@ -1,4 +1,4 @@
-import React from "react";
+import React, {JSX} from "react";
 import {makeStyles} from "@material-ui/core";
 import {ARROW_HEIGHT} from "./SectionTitle";
 

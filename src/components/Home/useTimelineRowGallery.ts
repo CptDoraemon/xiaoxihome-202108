@@ -2,6 +2,7 @@ import lightGallery from 'lightgallery';
 import lgZoom from 'lightgallery/plugins/zoom'
 import {useCallback, useRef} from "react";
 import {useMount, useUnmount} from "react-use";
+import {StaticImageData} from "next/image";
 
 const useTimelineRowGallery = (data: StaticImageData[]) => {
   const elRef = useRef<HTMLDivElement>(null);

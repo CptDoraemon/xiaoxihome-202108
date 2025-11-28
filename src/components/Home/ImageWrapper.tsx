@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core";
-import Image from "next/image";
+import Image, {StaticImageData} from "next/image";
 import clsx from "clsx";
 import useIsInSight from "../../utils/useIsInSight";
 import {useMount} from "react-use";
@@ -98,6 +98,7 @@ const ImageWrapper = ({src, onClick}: ImageWrapperProps) => {
             placeholder={'blur'}
             onLoad={() => setLoaded(true)}
             layout={'fill'}
+            alt={src.src}
           />
         </div>
       </div>

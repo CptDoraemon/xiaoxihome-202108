@@ -13,7 +13,9 @@ const useBabylon = (canvasId: string) => {
   const callbacksRef = useRef<null | (Awaited<ReturnType<typeof createScene>>)['callbacks']>(null);
 
   useMount(async () => {
-    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    const canvas = document.getElementById(canvasId) as unknown as HTMLCanvasElement | null;
+    if (!canvas) return;
+
     const engine = new BABYLON.Engine(canvas, true);
     const {scene, callbacks} = await createScene(engine, canvas); //Call the createScene function
 
@@ -70,7 +72,9 @@ const useBabylon = (canvasId: string) => {
         threshold: THRESHOLD
       });
 
-      const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+
       io.observe(canvas);
       intersectionObserverRef.current = io;
     }
