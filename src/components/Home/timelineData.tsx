@@ -55,7 +55,7 @@ const timelineData: TimelineDataItem[] = [
   },
   {
     year: 2022,
-    title: 'Software Developer @ Surge ERP Consulting | CryptoMibs.io',
+    title: 'CryptoMibs.io | Software Developer @ Surge ERP Consulting',
     description:
       <ul>
         <li>Led development of the blockchain application website, improving accessibility and reducing bundle size, resulting in an 80% faster loading time.</li>
