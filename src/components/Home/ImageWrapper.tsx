@@ -57,13 +57,10 @@ const ImageWrapper = ({src, onClick}: ImageWrapperProps) => {
     isInSight,
     elRef
   } = useIsInSight<HTMLDivElement>();
-  const [width, setWidth] = useState('100%');
-  const [height, setHeight] = useState('0');
-
-  const setDimensions = useCallback(() => {
+  const calculateDimensions = useCallback((containerWidth?: number) => {
     let maxWidth = 400;
-    if (elRef.current) {
-      maxWidth = Math.min(maxWidth, Math.floor(elRef.current.getBoundingClientRect().width))
+    if (containerWidth !== undefined) {
+      maxWidth = Math.min(maxWidth, Math.floor(containerWidth));
     }
     const maxHeight = 250;
     let width = maxWidth;
@@ -72,14 +69,32 @@ const ImageWrapper = ({src, onClick}: ImageWrapperProps) => {
     if (height * whRatio > width) {
       height = Math.round(width / whRatio);
     } else {
-      width = Math.round(height * whRatio)
+      width = Math.round(height * whRatio);
     }
-    setWidth(`${width}px`);
-    setHeight(`${height}px`)
-  }, [elRef, src.height, src.width]);
+    return {
+      width,
+      height
+    };
+  }, [src.height, src.width]);
+  const [{width, height}, setImageSize] = useState(() => {
+    const initial = calculateDimensions();
+    return {
+      width: `${initial.width}px`,
+      height: `${initial.height}px`
+    };
+  });
 
-  useMount(setDimensions);
-  const debouncedSetDimensions = useDebouncedCallback(setDimensions, 300);
+  const updateDimensions = useCallback(() => {
+    const containerWidth = elRef.current?.getBoundingClientRect().width;
+    const next = calculateDimensions(containerWidth);
+    setImageSize({
+      width: `${next.width}px`,
+      height: `${next.height}px`
+    });
+  }, [calculateDimensions, elRef]);
+
+  useMount(updateDimensions);
+  const debouncedSetDimensions = useDebouncedCallback(updateDimensions, 300);
 
   useEffect(() => {
     window.addEventListener('resize', debouncedSetDimensions);
