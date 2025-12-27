@@ -183,7 +183,7 @@ const CoverCanvas = () => {
                     component={Link}
                     target={'_blank'}
                     rel={'noopener'}
-                    href={'https://cptdoraemon.github.io/discussion-board-client/'}
+                    href={'https://blog.xiaoxihome.com'}
                   >
                     Blog
                   </Button>
